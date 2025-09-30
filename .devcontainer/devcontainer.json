@@ -1,0 +1,36 @@
+{
+    "name": "K3s Development Environment",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    // The Docker-in-Docker Feature installs and starts the daemon automatically
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "version": "latest"
+        }
+    },
+    // [1] Use the non-root user provided by the Dockerfile
+    // Critical: Give the container nearly all host capabilities
+    // Required to run k3s/containerd inside the container
+    "privileged": true,
+    // [3] Optional: Mount the docker socket from the container's host (the inner DinD runtime)
+    // This allows k3d/K3s to see and manage containers within the Dev Container's environment
+    // "mounts": [
+    //     "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+    // ],
+    // [4] Extensions you want installed in your Dev Container
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-kubernetes-tools.vscode-kubernetes-tools",
+                "redhat.vscode-yaml"
+            ]
+        }
+    },
+    // The command to run AFTER the container is created
+    "postCreateCommand": "echo 'Starting K3s Cluster...' && k3d cluster create my-dev-cluster",
+    // Ports you want to forward to your local machine (e.g., a service you deploy)
+    "forwardPorts": [
+        8080
+    ]
+}
