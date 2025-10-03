@@ -14,3 +14,5 @@ ARG K3D_VERSION="v5.6.0"
 RUN curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+COPY .bash_aliases /home/vscode/.bash_aliases
