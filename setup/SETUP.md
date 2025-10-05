@@ -1,58 +1,59 @@
 ## 🛠️ Homelab Setup: Debian + K3s + Flux (To-Do List)
 
 ```mermaid
-graph TD
-    subgraph Development Environment
-        DEV[VS Code DevContainer]
-        TERMINAL(Terminal/Shell)
-        K3D(K3s Cluster 'k3d')
-        FLUX_CLI[Flux CLI]
-        HELM_CLI[Helm CLI]
+%% === Modern & Clean GitOps Flow (Revised) ===
+graph LR
+    %% Define styles, now with black text color for better visibility
+    classDef dev fill:#e0f2fe,stroke:#3b82f6,stroke-width:2px,color:black;
+    classDef git fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:black;
+    classDef prod fill:#fefce8,stroke:#eab308,stroke-width:2px,color:black;
+    classDef app fill:#fee2e2,stroke:#ef4444,stroke-width:2px,color:black;
+
+    %% === Section 1: Development Environment ===
+    subgraph Developer Environment
+        subgraph DEV_CONTAINER [VS Code DevContainer]
+            direction TB
+            TOOLS("
+                <div style='font-weight:bold; font-size:1.1em;'>CLI Tools</div>
+                fa:fa-terminal Terminal<br/>
+                fa:fa-cogs Flux CLI<br/>
+                fa:fa-anchor Helm CLI
+            ")
+            K3D[fa:fa-cubes K3d Cluster]
+        end
+        TOOLS -- "1. Test & Validate" --> K3D
     end
 
+    %% === Section 2: Source of Truth ===
     subgraph Source of Truth
-        GIT[GitHub Repository]
+        GIT[fa:fa-github GitHub Repo]
     end
 
+    %% === Section 3: Production Environment ===
     subgraph Production Homelab
-        K3S_CP{K3s Server 'Laptop 1'}
-        K3S_WK[K3s Agent 'Laptop 2']
-        FLUX_C{Flux Controllers}
-        APP[Prometheus Stack]
+        subgraph K3s Cluster
+            direction TB
+            FLUX_C(fa:fa-sync Flux Controllers)
+            %% Node text updated as requested
+            K3S_CP["fa:fa-server Control Plane & Worker<br/>(Laptop 1)"]
+            K3S_WK["fa:fa-server K3s Agent<br/>(Laptop 2)"]
+            APP[fa:fa-chart-line Prometheus Stack]
+
+            K3S_CP -- Manages --> K3S_WK
+            FLUX_C -- "4. Applies Manifests" --> K3S_CP
+            K3S_CP -- Deploys --> APP
+        end
     end
 
-    DEV -- 1. Test Config/Manifests --> K3D
-    TERMINAL -- Alias/Export (Bashrc) --> DEV
-    FLUX_CLI -- 2. Bootstrap/Install --> K3S_CP
-    HELM_CLI -- Test OCI/Helm Install --> K3D
+    %% === Main Workflow Connections ===
+    DEV_CONTAINER -- "2. Commit & Push YAML" --> GIT
+    GIT -- "3. Pulls Changes" --> FLUX_C
 
-    DEV -- 3. Commit & Push YAML --> GIT
-
-    K3S_CP -- 4. Kubeconfig/API --> K3S_WK
-    K3S_CP -- Kubeconfig/API --> K3S_CP
-
-    GIT -- 5. Watch & Pull Changes --> FLUX_C
-    FLUX_C -- 6. Reconcile/Apply --> K3S_CP
-    FLUX_C -- 6. Reconcile/Apply --> K3S_WK
-    K3S_CP -- 7. Resources/Pods --> APP
-
-    %% Styles with black text for readability
-
-    %% Development Environment (Light Blue/Teal)
-    style DEV fill:#C1E7FF,stroke:#0077B6,color:#000
-    style TERMINAL fill:#C1E7FF,stroke:#0077B6,color:#000
-    style K3D fill:#C1E7FF,stroke:#0077B6,color:#000
-    style FLUX_CLI fill:#C1E7FF,stroke:#0077B6,color:#000
-    style HELM_CLI fill:#C1E7FF,stroke:#0077B6,color:#000
-
-    %% Source of Truth (Light Green/Aqua)
-    style GIT fill:#D4EACD,stroke:#38761D,color:#000
-
-    %% Production Homelab (Light Yellow/Gold)
-    style K3S_CP fill:#FFF9C4,stroke:#FFC107,color:#000
-    style K3S_WK fill:#FFF9C4,stroke:#FFC107,color:#000
-    style FLUX_C fill:#FFF9C4,stroke:#FFC107,color:#000
-    style APP fill:#FFF9C4,stroke:#FFC107,color:#000
+    %% Apply defined styles to the nodes
+    class DEV_CONTAINER,K3D,TOOLS dev;
+    class GIT git;
+    class K3S_CP,K3S_WK,FLUX_C prod;
+    class APP app;
 ```
 
 * **Phase 1: Base OS Setup (Both Laptops)**
