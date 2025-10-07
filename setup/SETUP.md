@@ -56,7 +56,7 @@ graph LR
     class APP app;
 ```
 
-* **Phase 1: Base OS Setup (Both Laptops)**
+* **Phase 1: Base OS Setup (Both Laptops)** Done except the firewall. Will do when install k3s
     * **Install Debian** (Minimal/Server version).
     * **Configure SSH** (Ensure server is running and accessible).
     * **Set Static IP** (Configure for stable networking).
