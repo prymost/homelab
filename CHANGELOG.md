@@ -1,6 +1,8 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2025-10-08:
+- Updated setup/SETUP.md as i'm done installing k3s
 2025-10-07:
 - Added setup/debian_bootstrap.sh script for initial Debian setup
 2025-10-04:

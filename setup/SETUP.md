@@ -56,13 +56,12 @@ graph LR
     class APP app;
 ```
 
-* **Phase 1: Base OS Setup (Both Laptops)** Done except the firewall. Will do when install k3s
+* **Phase 1: Base OS Setup (Both Laptops)** Done
     * **Install Debian** (Minimal/Server version).
     * **Configure SSH** (Ensure server is running and accessible).
     * **Set Static IP** (Configure for stable networking).
-    * **Disable Firewall** (Temporarily disable or adjust UFW for K3s traffic).
 
-* **Phase 2: K3s Installation (Server & Agent)**
+* **Phase 2: K3s Installation (Server & Agent)** Done
     * **Server (Laptop 1):**
         * Install **K3s Server** (Control Plane).
         * Retrieve the **Node Token** (from `/var/lib/rancher/k3s/server/node-token`).
