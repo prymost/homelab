@@ -14,3 +14,9 @@ spec:
       resources:
         limits:
           memory: 2Gi
+    grafana:
+      resources:
+        limits:
+          memory: 1Gi
+      service:
+        type: LoadBalancer
