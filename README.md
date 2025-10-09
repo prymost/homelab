@@ -7,12 +7,12 @@ This repository contains everything needed to set up and run my personal homelab
 The repository is organized into two main directories:
 
 -   `setup/`: This directory contains scripts and configurations for setting up the homelab from scratch, as well as for updating and maintaining it.
--   `content/`: This directory holds the configurations for all the services and applications running on the homelab.
+-   `clusters/homelab/`: This directory holds the configurations for all the services and applications running on the homelab.
 
 ## Getting Started
 
 1.  **Explore the `setup` directory:** Start by looking at the scripts in the `setup` directory to understand how the homelab is provisioned and configured.
-2.  **Check the `content` directory:** Browse the `content` directory to see the various services and applications that are deployed.
+2.  **Check the `clusters/homelab` directory:** Browse the `clusters/homelab` directory to see the various services and applications that are deployed.
 
 ## Development Environment
 
