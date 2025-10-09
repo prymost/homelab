@@ -6,3 +6,5 @@ metadata:
 spec:
   interval: 60m
   url: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
+  ref:
+    semver: "78.x.x"
