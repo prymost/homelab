@@ -56,12 +56,12 @@ graph LR
     class APP app;
 ```
 
-* **Phase 1: Base OS Setup (Both Laptops)** Done
+* **Phase 1: Base OS Setup (Both Laptops)** DONE
     * **Install Debian** (Minimal/Server version).
     * **Configure SSH** (Ensure server is running and accessible).
     * **Set Static IP** (Configure for stable networking).
 
-* **Phase 2: K3s Installation (Server & Agent)** Done
+* **Phase 2: K3s Installation (Server & Agent)** DONE
     * **Server (Laptop 1):**
         * Install **K3s Server** (Control Plane).
         * Retrieve the **Node Token** (from `/var/lib/rancher/k3s/server/node-token`).
@@ -70,7 +70,7 @@ graph LR
     * **Verification (Dev Machine):**
         * Run `kubectl get nodes` to confirm both nodes are **Ready**.
 
-* **Phase 3: GitOps Bootstrapping (From Dev Machine)**
+* **Phase 3: GitOps Bootstrapping (From Dev Machine)** DONE
     * **Install Flux CLI** on DevContainer.
     * **Bootstrap Flux** by running `flux bootstrap` and pointing it to Git repository.
     * **Verify Flux** with `kubectl get pods -n flux-system`.
