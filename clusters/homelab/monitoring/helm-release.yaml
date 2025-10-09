@@ -4,15 +4,11 @@ metadata:
   name: kube-prometheus-stack
   namespace: monitoring
 spec:
-  interval: 5m
-  chart:
-    spec:
-      chart: kube-prometheus-stack
-      version: "77.x.x"
-      sourceRef:
-        kind: HelmRepository
-        name: prometheus-community
-      interval: 10m
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: prometheus-community
+    namespace: monitoring
   values:
     prometheus:
       resources:
