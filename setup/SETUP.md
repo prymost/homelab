@@ -75,7 +75,7 @@ graph LR
     * **Bootstrap Flux** by running `flux bootstrap` and pointing it to Git repository.
     * **Verify Flux** with `kubectl get pods -n flux-system`.
 
-* **Phase 4: Initial Deployment (Prometheus Stack)**
+* **Phase 4: Initial Deployment (Prometheus Stack)** DONE
     * **Create Config Path** (e.g., `clusters/homelab/monitoring` in your Git repo).
     * **Define HelmRelease**
         * Create a YAML file defining the **Flux HelmRelease** custom resource.
