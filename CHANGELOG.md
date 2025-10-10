@@ -1,6 +1,11 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2025-10-10:
+- Split Mealie manifests into separate files for better organization
+- Add ingress for Mealie
+2025-10-09:
+- Added monitoring stack (Prometheus + Grafana + Alertmanager) to the cluster
 2025-10-08:
 - Updated setup/SETUP.md as i'm done installing k3s
 2025-10-07:
