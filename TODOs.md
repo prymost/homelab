@@ -7,6 +7,9 @@ Once a TODO is complete, I will delete it from this list and record it in the [c
 - Set up github actions to do automatic security checks on my manifests
 - Update default credentials for Grafana
 - Update default credentials for Mealie
+- Split mealie into multiple yaml files
+- Use ingress for mealie + configure dns on router
+- Use ingress for grafana + configure dns on router
 
 - Things i want in my homelab:
     - Monitoring solution (Grafana + Prometheus?)

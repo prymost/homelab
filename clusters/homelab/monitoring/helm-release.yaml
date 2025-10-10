@@ -20,3 +20,4 @@ spec:
           memory: 1Gi
       service:
         type: LoadBalancer
+        port: 9500
