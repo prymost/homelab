@@ -5,7 +5,7 @@ metadata:
   namespace: mealie
 spec:
   rules:
-    - host: mealie.local
+    - host: mealie.lan
       http:
         paths:
           - path: /

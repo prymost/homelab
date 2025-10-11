@@ -19,7 +19,7 @@ spec:
         enabled: true
         ingressClassName: traefik
         hosts:
-          - grafana.local
+          - grafana.lan
         path: /
       resources:
         limits:
