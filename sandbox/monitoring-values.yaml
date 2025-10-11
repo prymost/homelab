@@ -1,0 +1,20 @@
+prometheus:
+  resources:
+    limits:
+      memory: 2Gi
+grafana:
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    hosts:
+      - grafana.local
+    path: /
+  resources:
+    limits:
+      memory: 1Gi
+  persistence:
+    enabled: true
+    size: 20Gi
+    accessModes:
+      - ReadWriteOnce
+    storageClassName: "local-path"
