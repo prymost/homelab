@@ -12,7 +12,10 @@ The repository is organized into two main directories:
 ## Getting Started
 
 1.  **Explore the `setup` directory:** Start by looking at the scripts in the `setup` directory to understand how the homelab is provisioned and configured.
+    - debian_bootstrap.sh: Initial setup script for Debian-based systems.
 2.  **Check the `clusters/homelab` directory:** Browse the `clusters/homelab` directory to see the various services and applications that are deployed.
+    - mealie/: Configuration for the Mealie recipe manager.
+    - monitoring/: Configuration for the monitoring stack (Prometheus, Grafana, Alertmanager).
 
 ## Development Environment
 
@@ -36,10 +39,19 @@ The devcontainer is configured with the following features:
 
 ## Tips
 
+### Port Forwarding
+
 When a service (including the LoadBalancer) is running on the k3s cluster within the devcontainer, it's only accessible on a specific IP address from the main devcontainer host. To access it from your browser, you need to forward the port to `localhost`.
 
 You can achieve this using the following command:
 
 ```bash
 kubectl port-forward svc/<service-name> <local-port>:<service-port> -n <namespace>
+```
+
+### Testing Ingress
+If you have set up ingress for a service in the devcontainer, you can test it with the following command after port forwarding traefik to localhost:8080
+
+```bash
+curl -I -H "Host: <dedicated-hostname>" http://localhost:8080
 ```

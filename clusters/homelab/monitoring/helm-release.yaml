@@ -15,9 +15,12 @@ spec:
         limits:
           memory: 2Gi
     grafana:
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        hosts:
+          - grafana.local
+        path: /
       resources:
         limits:
           memory: 1Gi
-      service:
-        type: LoadBalancer
-        port: 9500
