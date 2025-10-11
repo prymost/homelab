@@ -21,6 +21,12 @@ spec:
         hosts:
           - grafana.lan
         path: /
+      persistence:
+        enabled: true
+        size: 20Gi
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: "local-path"
       resources:
         limits:
           memory: 1Gi
