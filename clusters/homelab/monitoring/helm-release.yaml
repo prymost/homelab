@@ -12,8 +12,44 @@ spec:
   values:
     prometheus:
       resources:
+        requests:
+          cpu: 200m
+          memory: 1Gi
         limits:
+          cpu: "1"
           memory: 2Gi
+      prometheusSpec:
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 50Gi
+              storageClassName: "local-path"
+    alertmanager:
+      alertmanagerSpec:
+        storage:
+          volumeClaimTemplate:
+            spec:
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 10Gi
+              storageClassName: "local-path"
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        hosts:
+          - alerts.lan
+        path: /
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
     grafana:
       ingress:
         enabled: true
@@ -21,12 +57,16 @@ spec:
         hosts:
           - grafana.lan
         path: /
+      resources:
+        requests:
+          cpu: 100m
+          memory: 1Gi
+        limits:
+          cpu: 500m
+          memory: 2Gi
       persistence:
         enabled: true
         size: 20Gi
         accessModes:
           - ReadWriteOnce
         storageClassName: "local-path"
-      resources:
-        limits:
-          memory: 1Gi

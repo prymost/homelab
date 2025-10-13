@@ -1,6 +1,10 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2025-10-12:
+- Added pvc to more resources in the monitoring stack to ensure data persistence
+- Added ingress for the Alertmanager UI
+- Also added more limits and requests to the monitoring stack resources
 2025-10-10:
 - Split Mealie manifests into separate files for better organization
 - Add ingress for Mealie

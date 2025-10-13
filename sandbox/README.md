@@ -27,6 +27,6 @@ And here are all the commands for specific charts i use. I leave them here bacau
 
 ```bash
 helm install monitoring oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack --create-namespace --namespace monitoring --version 78.0.0 --values sandbox/monitoring-values.yaml
-helm upgrade monitoring oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack --namespace monitoring --version 78.0.0 --values sandbox/monitoring-values.yaml
+helm upgrade monitoring oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack --namespace monitoring --values sandbox/monitoring-values.yaml
 helm uninstall monitoring -n monitoring
 ```
