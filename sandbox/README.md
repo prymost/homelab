@@ -26,8 +26,8 @@ And here are all the commands for specific charts i use. I leave them here bacau
 ### Monitoring stack (Prometheus, Grafana)
 
 ```bash
-helm install monitoring oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack --create-namespace --namespace monitoring --version 78.0.0 --values sandbox/monitoring-values.yaml
-helm upgrade monitoring oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack --namespace monitoring --values sandbox/monitoring-values.yaml
+helm install monitoring oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack --create-namespace --namespace monitoring --version 78.0.0 -f sandbox/monitoring/values.yaml -f sandbox/monitoring/dashboards.yaml
+helm upgrade monitoring oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack --namespace monitoring -f sandbox/monitoring/values.yaml -f sandbox/monitoring/dashboards.yaml
 helm uninstall monitoring -n monitoring
 ```
 
@@ -35,7 +35,7 @@ helm uninstall monitoring -n monitoring
 ### In-cluster Security Scans (Trivy Operator)
 
 ```bash
-helm install trivy-operator oci://ghcr.io/aquasecurity/helm-charts/trivy-operator --create-namespace --namespace trivy --version 0.31.0 --values sandbox/trivy-values.yaml
-helm upgrade trivy-operator oci://ghcr.io/aquasecurity/helm-charts/trivy-operator --namespace trivy --values sandbox/trivy-values.yaml
+helm install trivy-operator oci://ghcr.io/aquasecurity/helm-charts/trivy-operator --create-namespace --namespace trivy --version 0.31.0 -f sandbox/trivy/values.yaml
+helm upgrade trivy-operator oci://ghcr.io/aquasecurity/helm-charts/trivy-operator --namespace trivy -f sandbox/trivy/values.yaml
 helm uninstall trivy-operator -n trivy
 ```

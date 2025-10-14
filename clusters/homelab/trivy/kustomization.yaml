@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: trivy
+resources:
+  - helm-release.yaml
+  - helm-source.yaml
+  - namespace.yaml
+configMapGenerator:
+  - name: trivy-values
+    files:
+      - values.yaml=../../sandbox/trivy/values.yaml

@@ -1,0 +1,15 @@
+grafana:
+  dashboards:
+    default:
+      trivy-operator-dashboard:
+        gnetId: 17813
+        revision: 2
+        datasource: Prometheus
+      traefik-dashboard:
+        gnetId: 4475
+        revision: 5
+        datasource: Prometheus
+      flux-control-plane-dashboard:
+        gnetId: 16714
+        revision: 1
+        datasource: Prometheus
