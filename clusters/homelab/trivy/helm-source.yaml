@@ -1,0 +1,10 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: trivy-operator
+  namespace: trivy
+spec:
+  interval: 60m
+  url: oci://ghcr.io/aquasecurity/helm-charts/trivy-operator
+  ref:
+    semver: "0.31.x"

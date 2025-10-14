@@ -30,3 +30,12 @@ helm install monitoring oci://ghcr.io/prometheus-community/charts/kube-prometheu
 helm upgrade monitoring oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack --namespace monitoring --values sandbox/monitoring-values.yaml
 helm uninstall monitoring -n monitoring
 ```
+
+
+### In-cluster Security Scans (Trivy Operator)
+
+```bash
+helm install trivy-operator oci://ghcr.io/aquasecurity/helm-charts/trivy-operator --create-namespace --namespace trivy --version 0.31.0 --values sandbox/trivy-values.yaml
+helm upgrade trivy-operator oci://ghcr.io/aquasecurity/helm-charts/trivy-operator --namespace trivy --values sandbox/trivy-values.yaml
+helm uninstall trivy-operator -n trivy
+```
