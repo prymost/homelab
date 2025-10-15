@@ -8,7 +8,7 @@ resources:
 configMapGenerator:
   - name: monitoring-values
     files:
-      - values.yaml=../../sandbox/monitoring/values.yaml
+      - values.yaml=../../../sandbox/monitoring/values.yaml
   - name: monitoring-dashboards
     files:
-      - values.yaml=../../sandbox/monitoring/dashboards.yaml
+      - values.yaml=../../../sandbox/monitoring/dashboards.yaml

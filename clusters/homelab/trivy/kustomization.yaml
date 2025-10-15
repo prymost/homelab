@@ -8,4 +8,4 @@ resources:
 configMapGenerator:
   - name: trivy-values
     files:
-      - values.yaml=../../sandbox/trivy/values.yaml
+      - values.yaml=../../../sandbox/trivy/values.yaml
