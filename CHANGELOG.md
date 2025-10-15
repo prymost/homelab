@@ -1,6 +1,10 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2025-10-14:
+- Refactored yaml files in the clusters/homelab directory to use values files from the sandbox directory for consistency
+- Added some dashboards to the monitoring stack for Traefik and FluxCD
+- Added Github Actions workflow to run trivy scans on PRs
 2025-10-13:
 - Added Trivy Operator for in-cluster security scans
 2025-10-12:

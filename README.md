@@ -4,11 +4,12 @@ This repository contains everything needed to set up and run my personal homelab
 
 ## Repository Structure
 
-The repository is organized into two main directories:
+The repository is organized as follows:
 
--   `setup/`: This directory contains scripts and configurations for setting up the homelab from scratch, as well as for updating and maintaining it.
--   `clusters/homelab/`: This directory holds the configurations for all the services and applications running on the homelab.
--   `sandbox/`: This directory is used for testing various Kubernetes manifests and Helm charts before deploying them to the main homelab cluster.
+-   `.github/`: Contains GitHub Actions workflows for CI/CD, such as automated security scanning.
+-   `setup/`: Contains scripts and configurations for initial server setup.
+-   `clusters/homelab/`: Holds the FluxCD manifests that define the cluster's state. It uses Kustomize to reference configurations from the `sandbox` directory.
+-   `sandbox/`: Contains the raw configuration files (e.g., Helm `values.yaml`) for applications, which are then applied to the cluster from the `clusters` directory.
 
 ## Getting Started
 
