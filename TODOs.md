@@ -2,16 +2,23 @@ A list of things i want to do in this project.
 I do not want to be dependent on GitHub issues for tracking my tasks. At least not yet.
 Once a TODO is complete, I will delete it from this list and record it in the [changelog](./CHANGELOG.md).
 
-- Go over security checklist for k8s: https://kubernetes.io/docs/tasks/administer-cluster/securing-a-cluster/
-- Run something tha checks cluster security regularly (like kube-bench)
-    - Add trivy operator
-- Check k8s versions regularly and update
-- Set up github actions to do automatic security checks on my manifests
-- Update default credentials for Grafana
-- Update default credentials for Mealie
+- Compare outputs from Trivy, Kube-bench, Kubescape
+- Security improvements:
+    - Implement Network Policies to restrict pod-to-pod communication.
+    - Enforce Pod Security Standards (e.g., 'baseline' or 'restricted').
+    - Sign Git commits with GPG and configure FluxCD to verify them.
+    - Harden the host OS (Ansible playbook?):
+        - Disable unused services
+        - Implement firewall rules
+        - Regularly update and patch the OS
+        - Something to check k8s versions regularly and update
+    Alerting:
+        - Configure Alertmanager to alert via Discord
+        - Setup alerting for Trivy scans
 
 - Things i want in my homelab:
     - Minecraft server
+    - Family calendar + dashboard + todos (Nextcloud + Nextcloud calendar + Homarr, HomeAssistant dashboard, or similar)
     - Jellyfin? (Media server)
     - Homarr/Homepage? (Dashboard)
     - Caliber-web? (Ebook management)
