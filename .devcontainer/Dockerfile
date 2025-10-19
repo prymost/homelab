@@ -15,6 +15,10 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get install helm
 
+# Install kubeseal
+ARG KUBESEAL_VERSION="0.26.1"
+RUN curl -sL "https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-amd64.tar.gz" | tar -xz -C /usr/local/bin kubeseal
+
 # Install k3d: The tool we'll use to run K3s inside Docker
 # ARG K3D_VERSION="v5.6.0"
 RUN curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash

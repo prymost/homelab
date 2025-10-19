@@ -18,9 +18,9 @@
     "containerEnv": {
         "CLUSTER_NAME": "my-dev-cluster"
     },
-    // "mounts": [
-    //     "source=${localEnv:HOME}/.zshrc,target=/home/vscode/.zshrc,type=bind,consistency=cached"
-    // ],
+    "mounts": [
+        "source=${localEnv:HOME}/.kube,target=/home/vscode/.kube-host,type=bind,consistency=cached"
+    ],
     // [1] Use the non-root user provided by the Dockerfile
     // Critical: Give the container nearly all host capabilities
     // Required to run k3s/containerd inside the container
@@ -42,7 +42,7 @@
     // The command to run AFTER the container is created
     "postCreateCommand": "/bin/sh -c 'if k3d cluster list | grep -q $CLUSTER_NAME; then echo \"Cluster '$CLUSTER_NAME' already exists.\"; else echo \"Cluster '$CLUSTER_NAME' not found. Creating...\"; k3d cluster create $CLUSTER_NAME; fi'",
     // Find k3s cluster config in case it was lost during image rebuild
-    "postStartCommand": "echo \"export KUBECONFIG=\\\"$(k3d kubeconfig write $CLUSTER_NAME)\\\"\" >> /home/vscode/.bashrc",
+    "postStartCommand": "echo \"export KUBECONFIG=\\\"$(k3d kubeconfig write $CLUSTER_NAME):/home/vscode/.kube-host/config\\\"\" >> /home/vscode/.bashrc",
     // Ports you want to forward to your local machine (e.g., a service you deploy)
     "forwardPorts": [
         8080,
