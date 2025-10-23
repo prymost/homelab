@@ -8,9 +8,15 @@ resources:
   - helm-source.yaml
   - namespace.yaml
 configMapGenerator:
-  - name: monitoring-values
+  - name: monitoring-prometheus-values
     files:
-      - values.yaml=../../../sandbox/monitoring/values.yaml
+      - values.yaml=../../../sandbox/monitoring/prometheus-values.yaml
+  - name: monitoring-grafana-values
+    files:
+      - values.yaml=../../../sandbox/monitoring/grafana-values.yaml
+  - name: monitoring-alertmanager-values
+    files:
+      - values.yaml=../../../sandbox/monitoring/alertmanager-values.yaml
   - name: monitoring-dashboards
     files:
       - values.yaml=../../../sandbox/monitoring/dashboards.yaml

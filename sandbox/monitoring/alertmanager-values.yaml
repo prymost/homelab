@@ -1,0 +1,45 @@
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    secrets:
+      - alertmanager-email-creds
+    storage:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+          storageClassName: "local-path"
+  config:
+    global:
+      resolve_timeout: 5m
+      smtp_from: "ross.mage@gmail.com"
+      smtp_smarthost: "smtp.gmail.com:587"
+      smtp_auth_username: "ross.mage@gmail.com"
+      smtp_auth_password_file: "/etc/alertmanager/secrets/alertmanager-email-creds/email_pass"
+    route:
+      group_by: ["job"]
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      receiver: "email-notifications"
+    receivers:
+      - name: "email-notifications"
+        email_configs:
+          - to: "polar-swipe-ranch@duck.com"
+            send_resolved: true
+      - name: "null"
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    hosts:
+      - alerts.lan
+    path: /
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi

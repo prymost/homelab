@@ -39,6 +39,27 @@ The devcontainer is configured with the following features:
 -   **Docker-in-Docker:** Allows you to use Docker commands inside the devcontainer. Needed for k3s to run properly.
 -   **Kubectl:** The command-line tool for interacting with Kubernetes clusters.
 
+## Secret Management
+
+This repository uses a manual, script-based approach for handling sensitive information to avoid committing secrets directly to Git.
+
+### How it Works
+
+1.  **.env File:** A local `.env` file is used to store secret values (e.g., API keys, passwords). This file is explicitly ignored by Git via the `.gitignore` file and should **never** be committed.
+2.  **Sample File:** A `.env.sample` file is provided in the repository as a template.
+3.  **Creation Script:** The `setup/create_secrets.sh` script reads the variables from the local `.env` file and uses `kubectl` to create the necessary Kubernetes `Secret` resources in the cluster.
+
+### Usage
+
+To deploy the secrets to the cluster:
+
+1.  Copy `.env.sample` to a new file named `.env`.
+2.  Fill in the required secret values in the `.env` file.
+3.  Ensure your `kubectl` context is pointing to the desired cluster (dev or homelab).
+4.  Run the script: `./setup/create_secrets.sh`
+
+This method ensures that credentials are kept out of the version-controlled codebase while still allowing for a repeatable way to apply them to the cluster.
+
 ## Tips
 
 ### Port Forwarding

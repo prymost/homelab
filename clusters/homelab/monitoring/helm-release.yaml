@@ -11,6 +11,10 @@ spec:
     namespace: monitoring
   valuesFrom:
     - kind: ConfigMap
-      name: monitoring-values
+      name: monitoring-prometheus-values
+    - kind: ConfigMap
+      name: monitoring-grafana-values
+    - kind: ConfigMap
+      name: monitoring-alertmanager-values
     - kind: ConfigMap
       name: monitoring-dashboards
