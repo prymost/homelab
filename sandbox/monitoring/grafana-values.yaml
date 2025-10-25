@@ -11,10 +11,15 @@ grafana:
     fsGroup: 472
     runAsGroup: 472
     runAsUser: 472
+    seccompProfile:
+      type: RuntimeDefault
   securityContext:
-    fsGroup: 472
-    runAsGroup: 472
-    runAsUser: 472
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
   resources:
     requests:
       cpu: 100m
@@ -22,6 +27,31 @@ grafana:
     limits:
       cpu: 500m
       memory: 2Gi
+  sidecar:
+    dashboards:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 50Mi
+        limits:
+          cpu: 20m
+          memory: 100Mi
+    datasources:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 50Mi
+        limits:
+          cpu: 20m
+          memory: 100Mi
+  downloadDashboards:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 50Mi
+      limits:
+        cpu: 20m
+        memory: 100Mi
   persistence:
     enabled: true
     size: 20Gi

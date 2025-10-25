@@ -12,6 +12,7 @@ Once a TODO is complete, I will delete it from this list and record it in the [c
         - Implement firewall rules
         - Regularly update and patch the OS
         - Something to check k8s versions regularly and update
+        - Mitigate [[K3s exposes hostPort]]
 
 - Things i want in my homelab:
     - Minecraft server
