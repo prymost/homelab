@@ -18,3 +18,5 @@ spec:
       name: monitoring-alertmanager-values
     - kind: ConfigMap
       name: monitoring-dashboards
+    - kind: ConfigMap
+      name: alert-rules

@@ -8,6 +8,7 @@ prometheus:
       memory: 2Gi
   prometheusSpec:
     serviceMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
     serviceMonitorSelector: {}
     serviceMonitorNamespaceSelector: {}
     storageSpec:

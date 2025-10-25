@@ -26,8 +26,8 @@ And here are all the commands for specific charts i use. I leave them here bacau
 ### Monitoring stack (Prometheus, Grafana)
 
 ```bash
-helm install monitoring oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack --create-namespace --namespace monitoring --version 78.0.0 -f sandbox/monitoring/prometheus-values.yaml -f sandbox/monitoring/grafana-values.yaml -f sandbox/monitoring/alertmanager-values.yaml -f sandbox/monitoring/dashboards.yaml
-helm upgrade monitoring oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack --namespace monitoring -f sandbox/monitoring/prometheus-values.yaml -f sandbox/monitoring/grafana-values.yaml -f sandbox/monitoring/alertmanager-values.yaml -f sandbox/monitoring/dashboards.yaml
+helm install monitoring oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack --create-namespace --namespace monitoring --version 78.0.0 -f sandbox/monitoring/prometheus-values.yaml -f sandbox/monitoring/grafana-values.yaml -f sandbox/monitoring/alertmanager-values.yaml -f sandbox/monitoring/dashboards.yaml -f sandbox/monitoring/alert-rules.yaml
+helm upgrade monitoring oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack --namespace monitoring -f sandbox/monitoring/prometheus-values.yaml -f sandbox/monitoring/grafana-values.yaml -f sandbox/monitoring/alertmanager-values.yaml -f sandbox/monitoring/dashboards.yaml -f sandbox/monitoring/alert-rules.yaml
 helm uninstall monitoring -n monitoring
 ```
 

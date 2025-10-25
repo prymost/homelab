@@ -1,6 +1,9 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2025-10-24:
+- Configured Alertmanager to send alerts via email
+- Added alerting rules in the monitoring stack
 2025-10-14:
 - Refactored yaml files in the clusters/homelab directory to use values files from the sandbox directory for consistency
 - Added some dashboards to the monitoring stack for Traefik and FluxCD

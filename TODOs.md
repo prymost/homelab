@@ -12,9 +12,6 @@ Once a TODO is complete, I will delete it from this list and record it in the [c
         - Implement firewall rules
         - Regularly update and patch the OS
         - Something to check k8s versions regularly and update
-    Alerting:
-        - Configure Alertmanager to alert via Discord
-        - Setup alerting for Trivy scans
 
 - Things i want in my homelab:
     - Minecraft server

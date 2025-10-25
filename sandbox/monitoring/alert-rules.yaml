@@ -1,0 +1,218 @@
+additionalPrometheusRulesMap:
+  trivy-rules:
+    groups:
+      # 🧨 Vulnerability Alerts
+      - name: trivy.vulnerability.rules
+        rules:
+          # --- CRITICAL Vulnerabilities ---
+          - alert: NewCriticalVulnerability
+            expr: trivy_vulnerability_id{severity="CRITICAL"} unless trivy_vulnerability_id{severity="CRITICAL"} offset 1h
+            for: 1m
+            labels:
+              severity: CRITICAL
+              category: vulnerability
+            annotations:
+              summary: "New CRITICAL vulnerability detected in {{ $labels.resource_kind }}/{{ $labels.resource_name }}"
+              description: |
+                Vulnerability {{ $labels.vulnerability_id }} (CRITICAL) detected in {{ $labels.resource_kind }}/{{ $labels.resource_name }}.
+                Installed version: {{ $labels.installed_version }}, Fixed version: {{ $labels.fixed_version }}.
+                Title: {{ $labels.title }}
+                More info: {{ $labels.primary_link }}
+
+          - alert: ResolvedCriticalVulnerability
+            expr: trivy_vulnerability_id{severity="CRITICAL"} offset 1h unless trivy_vulnerability_id{severity="CRITICAL"}
+            for: 1m
+            labels:
+              severity: info
+              category: vulnerability
+            annotations:
+              summary: "CRITICAL vulnerability resolved in {{ $labels.resource_kind }}/{{ $labels.resource_name }}"
+              description: |
+                Vulnerability {{ $labels.vulnerability_id }} (CRITICAL) has been resolved in {{ $labels.resource_kind }}/{{ $labels.resource_name }}.
+
+          # --- HIGH Vulnerabilities ---
+          - alert: NewHighVulnerability
+            expr: trivy_vulnerability_id{severity="HIGH"} unless trivy_vulnerability_id{severity="HIGH"} offset 1h
+            for: 1m
+            labels:
+              severity: HIGH
+              category: vulnerability
+            annotations:
+              summary: "New HIGH vulnerability detected in {{ $labels.resource_kind }}/{{ $labels.resource_name }}"
+              description: |
+                Vulnerability {{ $labels.vulnerability_id }} (HIGH) detected in {{ $labels.resource_kind }}/{{ $labels.resource_name }}.
+                Installed version: {{ $labels.installed_version }}, Fixed version: {{ $labels.fixed_version }}.
+                Title: {{ $labels.title }}
+                More info: {{ $labels.primary_link }}
+
+          - alert: ResolvedHighVulnerability
+            expr: trivy_vulnerability_id{severity="HIGH"} offset 1h unless trivy_vulnerability_id{severity="HIGH"}
+            for: 1m
+            labels:
+              severity: info
+              category: vulnerability
+            annotations:
+              summary: "HIGH vulnerability resolved in {{ $labels.resource_kind }}/{{ $labels.resource_name }}"
+              description: |
+                Vulnerability {{ $labels.vulnerability_id }} (HIGH) has been resolved in {{ $labels.resource_kind }}/{{ $labels.resource_name }}.
+
+          # --- MEDIUM Vulnerabilities ---
+          - alert: NewMediumVulnerability
+            expr: trivy_vulnerability_id{severity="MEDIUM"} unless trivy_vulnerability_id{severity="MEDIUM"} offset 1h
+            for: 1m
+            labels:
+              severity: MEDIUM
+              category: vulnerability
+            annotations:
+              summary: "New MEDIUM vulnerability detected in {{ $labels.resource_kind }}/{{ $labels.resource_name }}"
+              description: |
+                Vulnerability {{ $labels.vulnerability_id }} (MEDIUM) detected in {{ $labels.resource_kind }}/{{ $labels.resource_name }}.
+                Installed version: {{ $labels.installed_version }}, Fixed version: {{ $labels.fixed_version }}.
+                Title: {{ $labels.title }}
+                More info: {{ $labels.primary_link }}
+
+          - alert: ResolvedMediumVulnerability
+            expr: trivy_vulnerability_id{severity="MEDIUM"} offset 1h unless trivy_vulnerability_id{severity="MEDIUM"}
+            for: 1m
+            labels:
+              severity: info
+              category: vulnerability
+            annotations:
+              summary: "MEDIUM vulnerability resolved in {{ $labels.resource_kind }}/{{ $labels.resource_name }}"
+              description: |
+                Vulnerability {{ $labels.vulnerability_id }} (MEDIUM) has been resolved in {{ $labels.resource_kind }}/{{ $labels.resource_name }}.
+
+      # ⚙️ Misconfiguration Alerts
+      - name: trivy.misconfiguration.rules
+        rules:
+          - alert: NewMisconfiguration
+            expr: trivy_resource_configaudits unless trivy_resource_configaudits offset 1h
+            for: 1m
+            labels:
+              severity: "{{ $labels.severity }}"
+              category: misconfiguration
+            annotations:
+              summary: "New misconfiguration detected in {{ $labels.resource_kind }}/{{ $labels.resource_name }}"
+              description: |
+                Misconfiguration {{ $labels.configaudit_id }} ({{ $labels.severity }}) detected in {{ $labels.resource_kind }}/{{ $labels.resource_name }}.
+                Title: {{ $labels.title }}
+                More info: {{ $labels.primary_link }}
+
+          - alert: ResolvedMisconfiguration
+            expr: trivy_resource_configaudits offset 1h unless trivy_resource_configaudits
+            for: 1m
+            labels:
+              severity: info
+              category: misconfiguration
+            annotations:
+              summary: "Misconfiguration resolved in {{ $labels.resource_kind }}/{{ $labels.resource_name }}"
+              description: |
+                Misconfiguration {{ $labels.configaudit_id }} has been resolved in {{ $labels.resource_kind }}/{{ $labels.resource_name }}.
+
+      # 🔑 Exposed Secret Alerts
+      - name: trivy.secret.rules
+        rules:
+          - alert: NewExposedSecret
+            expr: trivy_image_exposedsecrets unless trivy_image_exposedsecrets offset 1h
+            for: 1m
+            labels:
+              severity: "{{ $labels.severity }}"
+              category: secret
+            annotations:
+              summary: "New exposed secret detected in {{ $labels.resource_kind }}/{{ $labels.resource_name }}"
+              description: |
+                Exposed secret {{ $labels.secret_id }} ({{ $labels.severity }}) detected in {{ $labels.resource_kind }}/{{ $labels.resource_name }}.
+                Title: {{ $labels.title }}
+                More info: {{ $labels.primary_link }}
+
+          - alert: ResolvedExposedSecret
+            expr: trivy_image_exposedsecrets offset 1h unless trivy_image_exposedsecrets
+            for: 1m
+            labels:
+              severity: info
+              category: secret
+            annotations:
+              summary: "Exposed secret resolved in {{ $labels.resource_kind }}/{{ $labels.resource_name }}"
+              description: |
+                Exposed secret {{ $labels.secret_id }} has been resolved in {{ $labels.resource_kind }}/{{ $labels.resource_name }}.
+
+      # 🧠 Trivy System Health
+      - name: trivy.health.rules
+        rules:
+          - alert: TrivyDBOutdated
+            expr: time() - trivy_db_update_timestamp_seconds > 86400
+            for: 5m
+            labels:
+              severity: warning
+              category: trivy
+            annotations:
+              summary: "Trivy DB not updated in over 24 hours"
+              description: |
+                The Trivy vulnerability database has not been updated in the past 24 hours.
+                This may cause outdated vulnerability data. Check the Trivy operator logs or DB sync job.
+
+      # 💻 Node & System Resource Alerts
+      - name: system.resource.rules
+        rules:
+          - alert: NodeCPUHigh
+            expr: avg by (instance) (rate(node_cpu_seconds_total{mode!="idle"}[5m])) > 0.9
+            for: 10m
+            labels:
+              severity: warning
+              category: system
+            annotations:
+              summary: "High CPU usage on node {{ $labels.instance }}"
+              description: |
+                Node {{ $labels.instance }} CPU usage has been over 90% for 10 minutes.
+                Consider checking workloads or resource limits.
+
+          - alert: NodeMemoryHigh
+            expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) > 0.9
+            for: 10m
+            labels:
+              severity: warning
+              category: system
+            annotations:
+              summary: "High memory usage on node {{ $labels.instance }}"
+              description: |
+                Node {{ $labels.instance }} memory usage has exceeded 90% for 10 minutes.
+                Check for memory leaks or pods with insufficient limits.
+
+          - alert: NodeDiskUsageHigh
+            expr: (1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"})) > 0.9
+            for: 10m
+            labels:
+              severity: warning
+              category: storage
+            annotations:
+              summary: "Disk usage high on {{ $labels.instance }} ({{ $labels.mountpoint }})"
+              description: |
+                Disk usage on {{ $labels.instance }} mount {{ $labels.mountpoint }} is over 90%.
+                Consider cleaning logs or expanding disk capacity.
+
+          - alert: NodeDiskAlmostFull
+            expr: (1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"})) > 0.95
+            for: 5m
+            labels:
+              severity: critical
+              category: storage
+            annotations:
+              summary: "Disk almost full on {{ $labels.instance }} ({{ $labels.mountpoint }})"
+              description: |
+                Disk usage on {{ $labels.instance }} mount {{ $labels.mountpoint }} has exceeded 95%.
+                Immediate cleanup or storage expansion recommended.
+
+      # 🌐 Application Availability
+      - name: app.availability.rules
+        rules:
+          - alert: AppEndpointDown
+            expr: up{job=~"traefik|mealie"} == 0
+            for: 2m
+            labels:
+              severity: critical
+              category: app
+            annotations:
+              summary: "App endpoint {{ $labels.job }} is down"
+              description: |
+                Prometheus has been unable to scrape metrics from {{ $labels.job }} for over 2 minutes.
+                The service may be unavailable or restarting.

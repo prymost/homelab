@@ -20,3 +20,6 @@ configMapGenerator:
   - name: monitoring-dashboards
     files:
       - values.yaml=../../../sandbox/monitoring/dashboards.yaml
+  - name: alert-rules
+    files:
+      - values.yaml=../../../sandbox/monitoring/alert-rules.yaml
