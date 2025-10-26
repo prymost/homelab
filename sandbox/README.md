@@ -23,6 +23,18 @@ helm uninstall <name> --namespace <namespace>
 
 And here are all the commands for specific charts i use. I leave them here bacause i'm lazy and just want to copy paste them when testing a small change in the devcontainer.
 
+### Mealie
+
+The Mealie application is managed with raw Kubernetes manifests.
+
+```bash
+# Apply all manifests, including network policies
+kubectl apply -k sandbox/mealie/
+
+# Delete all manifests
+kubectl delete -k sandbox/mealie/
+```
+
 ### Monitoring stack (Prometheus, Grafana)
 
 ```bash
