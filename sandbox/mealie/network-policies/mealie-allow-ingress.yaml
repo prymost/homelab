@@ -13,11 +13,16 @@ spec:
     - from:
         - namespaceSelector:
             matchLabels:
-              # In k3s, the traefik namespace is kube-system
               kubernetes.io/metadata.name: kube-system
           podSelector:
             matchLabels:
-              app: traefik
+              app.kubernetes.io/name: traefik
+      ports:
+        - protocol: TCP
+          port: 9000
+    - from:
+        - ipBlock:
+            cidr: 192.168.50.119/32 # homelab1
       ports:
         - protocol: TCP
           port: 9000
