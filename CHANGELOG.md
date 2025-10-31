@@ -1,6 +1,8 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2025-10-30:
+- Added network policies for Trivy Operator
 2025-10-27:
 - Attempting to add network policies to Mealie. Can't test those in a devcontainer as networking is different there
 2025-10-24:

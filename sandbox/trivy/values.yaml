@@ -2,3 +2,5 @@ serviceMonitor:
   enabled: true
 trivy:
   ignoreUnfixed: true
+  podLabels:
+    app: trivy

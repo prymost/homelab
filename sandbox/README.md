@@ -50,4 +50,7 @@ helm uninstall monitoring -n monitoring
 helm install trivy-operator oci://ghcr.io/aquasecurity/helm-charts/trivy-operator --create-namespace --namespace trivy --version 0.31.0 -f sandbox/trivy/values.yaml
 helm upgrade trivy-operator oci://ghcr.io/aquasecurity/helm-charts/trivy-operator --namespace trivy -f sandbox/trivy/values.yaml
 helm uninstall trivy-operator -n trivy
+
+# Apply network policies for Trivy Operator
+kubectl apply -k sandbox/trivy/network-policies/
 ```
