@@ -10,18 +10,31 @@ spec:
   policyTypes:
     - Egress
   egress:
-    # Allow to connect to prometheus
+    # Allow Grafana to talk to Prometheus, Alertmanager, and other monitoring services
     - to:
-      - podSelector:
-          matchLabels:
-            app.kubernetes.io/name: prometheus
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: alertmanager
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: kube-state-metrics
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: node-exporter
       ports:
-      - port: 9090
-        protocol: TCP
+        - protocol: TCP
+          port: 9090
+        - protocol: TCP
+          port: 8080
+        - protocol: TCP
+          port: 9093
     # Allow to download dashboards
     - to:
-      - ipBlock:
-          cidr: 0.0.0.0/0
+        - ipBlock:
+            cidr: 0.0.0.0/0
       ports:
-      - port: 443
-        protocol: TCP
+        - port: 443
+          protocol: TCP

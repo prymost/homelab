@@ -10,7 +10,7 @@ spec:
   policyTypes:
     - Ingress
   ingress:
-    # Allow traefik to access UI
+    # Allow from Traefik (main ingress controller)
     - from:
         - namespaceSelector:
             matchLabels:
@@ -20,4 +20,29 @@ spec:
               app.kubernetes.io/name: traefik
       ports:
         - port: 80
+          protocol: TCP
+        - port: 3000
+          protocol: TCP
+
+    # Allow from svclb-traefik pods (node load balancer helpers)
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              svccontroller.k3s.cattle.io/svcname: traefik
+      ports:
+        - port: 80
+          protocol: TCP
+        - port: 3000
+          protocol: TCP
+
+    # Allow intra-namespace traffic (metrics, probes, etc.)
+    - from:
+        - podSelector: {}
+      ports:
+        - port: 80
+          protocol: TCP
+        - port: 3000
           protocol: TCP

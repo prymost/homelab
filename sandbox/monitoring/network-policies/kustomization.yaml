@@ -8,3 +8,4 @@ resources:
   - allow-alertmanager-egress.yaml
   - allow-grafana-egress.yaml
   - allow-dns-and-kube-api.yaml
+  - allow-prometheus-ingress.yaml
