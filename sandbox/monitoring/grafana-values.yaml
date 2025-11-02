@@ -29,8 +29,6 @@ grafana:
       memory: 2Gi
   sidecar:
     dashboards:
-      enabled: true
-      label: grafana_dashboard
       resources:
         requests:
           cpu: 10m
@@ -39,14 +37,6 @@ grafana:
           cpu: 20m
           memory: 100Mi
     datasources:
-      datasources.yaml:
-        apiVersion: 1
-        datasources:
-          - name: Prometheus
-            type: prometheus
-            url: http://prometheus-operated.monitoring.svc.cluster.local:9090
-            access: proxy
-            isDefault: true
       resources:
         requests:
           cpu: 10m
