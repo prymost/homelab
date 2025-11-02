@@ -13,13 +13,19 @@ grafana:
     runAsUser: 472
     seccompProfile:
       type: RuntimeDefault
-  securityContext:
+  containerSecurityContext:
     runAsNonRoot: true
     allowPrivilegeEscalation: false
     capabilities:
       drop:
         - ALL
     readOnlyRootFilesystem: true
+  networkPolicy:
+    enabled: true
+    ingress: true
+    allowExternal: true
+    egress:
+      enabled: true
   resources:
     requests:
       cpu: 100m

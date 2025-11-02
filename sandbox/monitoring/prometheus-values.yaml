@@ -6,6 +6,11 @@ prometheus:
     limits:
       cpu: "1"
       memory: 2Gi
+  # networkPolicy:
+  #   enabled: true
+  #   ingress: []
+  #   egress: []
+  #   allowExternal: true
   prometheusSpec:
     serviceMonitorSelectorNilUsesHelmValues: false
     ruleSelectorNilUsesHelmValues: false
@@ -39,3 +44,5 @@ prometheus-node-exporter:
     capabilities:
       drop:
         - ALL
+  networkPolicy:
+    enabled: true

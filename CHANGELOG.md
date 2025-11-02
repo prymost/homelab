@@ -1,6 +1,9 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2025-11-01:
+- Removed manual network policies for the monitoring stack since could not figure out why default dashboards and default data source were not showing up
+- Added very loose network policies via Helm chart values. Would have to revisit later to tighten them up
 2025-10-30:
 - Added network policies for Trivy Operator
 2025-10-27:
