@@ -37,8 +37,9 @@ spec:
           port: 443
     # Allow to k8s server
     - to:
-        - ipBlock:
-            cidr: 192.168.50.119/32 # homelab1
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
       ports:
         - protocol: TCP
           port: 443

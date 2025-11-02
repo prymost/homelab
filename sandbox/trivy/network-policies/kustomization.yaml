@@ -4,3 +4,4 @@ resources:
   - default-deny.yaml
   - allow-monitoring.yaml
   - allow-egress.yaml
+  - allow-namespace-traffic.yaml
