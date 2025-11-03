@@ -1,0 +1,45 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-egress-scans-to-dns-and-internet
+  namespace: trivy
+spec:
+  podSelector:
+    matchLabels:
+      vulnerabilityReport.scanner: Trivy
+  policyTypes:
+    - Egress
+  egress:
+    # Allow DNS lookups
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # Allow access to the internet
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              # Default k3s pod CIDR
+              - 10.42.0.0/16
+              # Default k3s service CIDR
+              - 10.43.0.0/16
+      ports:
+        - protocol: TCP
+          port: 443
+    # Allow to k8s server
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: TCP
+          port: 443
