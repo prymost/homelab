@@ -6,7 +6,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: trivy
+      app.kubernetes.io/name: trivy-operator
   policyTypes:
     - Ingress
   ingress:

@@ -1,8 +1,6 @@
 serviceMonitor:
   enabled: true
 trivy:
-  compliance:
-    enabled: false
   ignoreUnfixed: true
   podLabels:
     app: trivy
