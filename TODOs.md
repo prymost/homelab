@@ -2,9 +2,7 @@ A list of things i want to do in this project.
 I do not want to be dependent on GitHub issues for tracking my tasks. At least not yet.
 Once a TODO is complete, I will delete it from this list and record it in the [changelog](./CHANGELOG.md).
 
-- Compare outputs from Trivy, Kube-bench, Kubescape
 - Security improvements:
-    - Implement Network Policies to restrict pod-to-pod communication.
     - Enforce Pod Security Standards (e.g., 'baseline' or 'restricted').
     - Sign Git commits with GPG and configure FluxCD to verify them.
     - Harden the host OS (Ansible playbook?):
@@ -24,3 +22,9 @@ Once a TODO is complete, I will delete it from this list and record it in the [c
 - Data persistence strategy
     - Long term: NAS (Synology)
     - Short term: Bind mounts to host machine
+
+- Followups
+    - Fix Traefik dashboard in grafana. No data
+    - Fix FluxCD dashboard in grafana. No data
+    - Enhance network policies for monitoring stack
+    - Compare outputs from Trivy, Kube-bench, Kubescape
