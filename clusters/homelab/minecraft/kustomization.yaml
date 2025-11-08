@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: minecraft
+generatorOptions:
+  disableNameSuffixHash: true
+resources:
+  - helm-release.yaml
+  - helm-source.yaml
+  - namespace.yaml
+  - ../../../sandbox/minecraft/network-policies
+configMapGenerator:
+  - name: minecraft-values
+    files:
+      - values.yaml=../../../sandbox/minecraft/values.yaml

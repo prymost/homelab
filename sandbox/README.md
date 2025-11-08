@@ -54,3 +54,16 @@ helm uninstall trivy-operator -n trivy
 # Apply network policies for Trivy Operator
 kubectl apply -k sandbox/trivy/network-policies/
 ```
+
+### Minecraft Server
+
+```bash
+helm repo add itzg https://itzg.github.io/minecraft-server-charts/
+
+helm install minecraft itzg/minecraft --create-namespace --namespace minecraft --version 5.0.0 -f sandbox/minecraft/values.yaml
+helm upgrade minecraft itzg/minecraft --namespace minecraft -f sandbox/minecraft/values.yaml
+helm uninstall minecraft -n minecraft
+
+# Apply network policies
+kubectl apply -k sandbox/minecraft/network-policies/
+```

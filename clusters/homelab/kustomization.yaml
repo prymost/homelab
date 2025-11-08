@@ -4,3 +4,4 @@ resources:
   - mealie
   - monitoring
   - trivy
+  - minecraft

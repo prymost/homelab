@@ -1,0 +1,24 @@
+# apiVersion: networking.k8s.io/v1
+# kind: NetworkPolicy
+# metadata:
+#   name: allow-ingress-from-prometheus
+#   namespace: minecraft
+# spec:
+#   podSelector:
+#     matchLabels:
+#       app: minecraft
+#   policyTypes:
+#     - Ingress
+#   ingress:
+#     - from:
+#         - namespaceSelector:
+#             matchLabels:
+#               kubernetes.io/metadata.name: monitoring
+#           podSelector:
+#             matchLabels:
+#               app.kubernetes.io/name: prometheus
+#       ports:
+#         - protocol: TCP
+#           port: 30010
+#
+# To monitor server, add a Prometheus exporter plugin or sidecar, and then create a policy to allow access to the specific metrics port it provides.
