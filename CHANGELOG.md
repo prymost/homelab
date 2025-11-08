@@ -1,6 +1,9 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2025-11-08:
+- Added fully working Minecraft server via Helm chart
+- Added network policies to allow ingress traffic from Traefik to Minecraft server restricting everything else
 2025-11-02:
 - Fixed Trivy Operator network policies. No failed scans anymore
 2025-11-01:

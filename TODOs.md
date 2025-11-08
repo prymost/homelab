@@ -13,7 +13,6 @@ Once a TODO is complete, I will delete it from this list and record it in the [c
         - Mitigate [[K3s exposes hostPort]]
 
 - Things i want in my homelab:
-    - Minecraft server
     - Family calendar + dashboard + todos (Nextcloud + Nextcloud calendar + Homarr, HomeAssistant dashboard, or similar)
     - Jellyfin? (Media server)
     - Homarr/Homepage? (Dashboard)
