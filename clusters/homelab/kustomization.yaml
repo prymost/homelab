@@ -5,3 +5,4 @@ resources:
   - monitoring
   - trivy
   - minecraft
+  - kube-system

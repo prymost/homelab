@@ -19,4 +19,4 @@ spec:
               app.kubernetes.io/name: traefik
       ports:
         - protocol: TCP
-          port: 30010
+          port: 25565
