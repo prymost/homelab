@@ -167,7 +167,7 @@ echo "-----------------------------"
 # --- Package Installation ---
 echo "Installing required packages..."
 sudo apt update && sudo apt upgrade -y -qq
-sudo apt install -y kitty-terminfo curl iptables ipset
+sudo apt install -y kitty-terminfo curl iptables ipset nfs-common
 sudo modprobe xt_set && sudo modprobe ip_set && sudo modprobe ip_set_hash_net
 echo "Packages installed."
 

@@ -6,3 +6,4 @@ resources:
   - trivy
   - minecraft
   - kube-system
+  - nfs-provisioner

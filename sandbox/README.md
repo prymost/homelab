@@ -23,6 +23,20 @@ helm uninstall <name> --namespace <namespace>
 
 And here are all the commands for specific charts i use. I leave them here bacause i'm lazy and just want to copy paste them when testing a small change in the devcontainer.
 
+### NFS Provisioner (for Dev Environment)
+
+To set up the NFS provisioner in the devcontainer, use the following Helm command. This uses the common values and overrides them with the dev-specific path.
+
+```bash
+helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
+
+helm install nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner --create-namespace --namespace nfs-provisioner --version 4.0.18 -f sandbox/nfs-provisioner/values.yaml -f sandbox/nfs-provisioner/values-dev.yaml
+
+helm upgrade nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner --namespace nfs-provisioner -f sandbox/nfs-provisioner/values.yaml -f sandbox/nfs-provisioner/values-dev.yaml
+
+helm uninstall nfs-subdir-external-provisioner -n nfs-provisioner
+```
+
 ### Mealie
 
 The Mealie application is managed with raw Kubernetes manifests.

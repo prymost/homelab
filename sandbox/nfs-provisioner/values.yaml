@@ -1,0 +1,12 @@
+nfs:
+  server: 192.168.50.42
+  path: /
+  mountOptions:
+    - nfsvers=4.1
+    - tcp
+
+storageClass:
+  name: nfs-client
+  defaultClass: false
+  reclaimPolicy: Retain
+  archiveOnDelete: true

@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: nfs-provisioner
+generatorOptions:
+  disableNameSuffixHash: true
+resources:
+  - namespace.yaml
+  - helm-repository.yaml
+  - helm-release.yaml
+
+configMapGenerator:
+  - name: nfs-provisioner-values-common
+    files:
+      - values.yaml=../../../sandbox/nfs-provisioner/values.yaml
+  - name: nfs-provisioner-values-prod
+    files:
+      - values.yaml=../../../sandbox/nfs-provisioner/values-prod.yaml
