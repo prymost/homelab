@@ -9,3 +9,4 @@ spec:
       storage: 500Mi
   accessModes:
     - ReadWriteOnce
+  storageClassName: nfs-client
