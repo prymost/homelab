@@ -49,6 +49,18 @@ kubectl apply -k sandbox/mealie/
 kubectl delete -k sandbox/mealie/
 ```
 
+### Home Assistant
+
+The Home Assistant application is managed with raw Kubernetes manifests.
+
+```bash
+# Apply all manifests, including network policies
+kubectl apply -k sandbox/home-assistant/
+
+# Delete all manifests
+kubectl delete -k sandbox/home-assistant/
+```
+
 ### Monitoring stack (Prometheus, Grafana)
 
 ```bash
