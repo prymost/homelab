@@ -3,8 +3,8 @@ kind: Kustomization
 namespace: home-assistant
 resources:
   - ../../../sandbox/home-assistant/namespace.yaml
-  # - ../../../sandbox/home-assistant/pvc.yaml
-  # - ../../../sandbox/home-assistant/service.yaml
-  # - ../../../sandbox/home-assistant/deployment.yaml
-  # - ../../../sandbox/home-assistant/ingress.yaml
+  - ../../../sandbox/home-assistant/pvc.yaml
+  - ../../../sandbox/home-assistant/service.yaml
+  - ../../../sandbox/home-assistant/deployment.yaml
+  - ../../../sandbox/home-assistant/ingress.yaml
   - ../../../sandbox/home-assistant/network-policies/

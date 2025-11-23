@@ -22,3 +22,9 @@ spec:
           default: true
         exposedPort: 25565
         protocol: TCP
+      home-assistant:
+        port: 8123
+        expose:
+          default: true
+        exposedPort: 8123
+        protocol: TCP

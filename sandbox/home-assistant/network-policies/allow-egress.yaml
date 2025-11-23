@@ -28,10 +28,10 @@ spec:
         - ipBlock:
             cidr: 0.0.0.0/0
             except:
-              # Default k3s pod CIDR
-              - 10.42.0.0/16
-              # Default k3s service CIDR
-              - 10.43.0.0/16
+              # Default k3s pods CIDR
+              - 10.0.0.0/8
       ports:
         - protocol: TCP
           port: 443
+        - protocol: TCP
+          port: 80
