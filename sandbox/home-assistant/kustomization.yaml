@@ -7,4 +7,4 @@ resources:
   # - service.yaml
   # - deployment.yaml
   # - ingress.yaml
-  # - network-policies/
+  - network-policies/

@@ -7,4 +7,4 @@ resources:
   # - ../../../sandbox/home-assistant/service.yaml
   # - ../../../sandbox/home-assistant/deployment.yaml
   # - ../../../sandbox/home-assistant/ingress.yaml
-  # - ../../../sandbox/home-assistant/network-policies/
+  - ../../../sandbox/home-assistant/network-policies/
