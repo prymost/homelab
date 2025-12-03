@@ -1,0 +1,178 @@
+kiosk_mode:
+  admin_settings:
+    hide_header: false
+    hide_sidebar: false
+  non_admin_settings:
+    hide_header: true
+    hide_sidebar: true
+    ignore_entity_settings: true
+views:
+  - title: Home
+    path: home
+    type: custom:grid-layout
+    layout:
+      grid-template-columns: 75% 25%
+      grid-template-rows: auto
+      grid-gap: 3px
+      grid-template-areas: |
+        "cal sidebar"
+    cards:
+      - type: vertical-stack
+        view_layout:
+          grid-area: cal
+        cards:
+          - type: markdown
+            content: >
+              <h1>{{ now().strftime('%-I:%M %p') }}</h1> <h2>{{
+              now().strftime('%A, %B %-d') }}</h2>
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    background: none !important;
+                    border: none !important;
+                    box-shadow: none !important;
+                    padding: 0 0 0 0 !important;
+                  }
+                ha-markdown$: |
+                  ha-markdown-element {
+                    display: flex !important;
+                    flex-direction: row !important; /* Forces side-by-side */
+                    align-items: baseline !important; /* Aligns text bottom */
+                    gap: 30px !important; /* Space between Time and Date */
+                    padding: 0
+                  }
+
+                  /* Style the H1 (Time) */
+                  h1 {
+                    font-size: 4rem !important;
+                    font-weight: 600 !important;
+                    margin: 0 !important;
+                    line-height: 1 !important;
+                  }
+
+                  /* Style the H2 (Date) */
+                  h2 {
+                    font-size: 2.2rem !important;
+                    font-weight: 300 !important;
+                    color: #9CA3AF !important;
+                    margin: 0 !important;
+                  }
+          - type: custom:week-planner-card
+            calendars:
+              - entity: calendar.bo_cal
+                color: "#4285F4"
+                name: Dad
+              - entity: calendar.nata_cal
+                color: "#ae9cce"
+                name: Mom
+              - entity: calendar.family
+                color: "#f6bf26"
+                name: Family
+              - entity: calendar.holidays_in_united_states
+                color: "#7e59f8"
+                name: US Holidays
+              - entity: calendar.calendar.holidays_in_israel
+                color: "#c0fbcd"
+                name: Israel Holidays
+            days: 7
+            startingDayOffset: 0
+            hideWeekend: false
+            noCardBackground: false
+            compact: false
+            weather:
+              showCondition: true
+              showTemperature: true
+              showLowTemperature: true
+              useTwiceDaily: false
+              entity: weather.forecast_home
+            showLocation: false
+            hidePastEvents: false
+            hideDaysWithoutEvents: false
+            hideTodayWithoutEvents: false
+            combineSimilarEvents: true
+            showLegend: false
+            legendToggle: false
+            view_layout:
+              grid-area: cal
+            mode: week
+            timeFormat: h:mm a
+            border: false
+            texts:
+              monday: Mon
+              tuesday: Tue
+              wednesday: Wed
+              thursday: Thu
+              friday: Fri
+              saturday: Sat
+              sunday: Sun
+              yesterday: ""
+              today: ""
+              tomorrow: ""
+              fullDay: " "
+            card_mod:
+              style: |
+                ha-card {
+                  --days-spacing: 5px !important;
+                  --events-margin-top: 3px;
+                  --event-padding: 3px;
+                  .event.past {
+                    opacity: .2;
+                    background-color: gray !important;
+                  }
+                  .time {
+                    color: #333333 !important;
+                    font-size: 0.8em !important;
+                  }
+                  .event {
+                    color: #333333 !important;
+                    padding: 1px 4px !important;       /* Minimal internal padding */
+                    margin-bottom: 3px !important;     /* Less space between events */
+                    line-height: 1.1 !important;
+                    line-height: 16px !important;
+                    background-color: var(--border-color) !important;
+                    border-radius: 10px !important;
+                    max-height: 80px !important;
+                    overflow: hidden !important;
+                    font-size: 1em !important;
+                  }
+                  .event .title {
+                    margin: 0 !important;
+                    padding: 0 !important;
+                  }
+                  .none {
+                    background-color: transparent !important;
+                  }
+                  .today .number {
+                    border-radius: 5px;
+                    background-color: orange !important;
+                    padding-left: 4px;
+                    padding-right: 4px;
+
+                  }
+                  .day .date .text {
+                    font-size: 1em !important;
+                    font-weight: bold !important;
+                  }
+                  .day .date .number {
+                    font-weight: bold !important;
+                    font-size: 3em !important;
+                  }
+                  .day {
+                    # --background-color: red;
+                    border: solid 1px #4a4a4a;
+                    padding: 0.2%;
+                    width: 13% !important;
+                  }
+                  .weather {
+                    position: relative !important;
+                    margin-top: 4px !important;
+                    font-size: 0.85em !important;
+                    font-weight: normal !important;
+                    display: flex !important;
+                    align-items: center !important;
+                  }
+                }
+      - type: iframe
+        url: >-
+          https://app.todoist.com/app/today
