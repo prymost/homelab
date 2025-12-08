@@ -12,15 +12,15 @@ views:
     path: home
     type: custom:grid-layout
     layout:
-      grid-template-columns: 75% 25%
-      # Row 1: Header (Height adjusts to content), Row 2: Calendar (Fills rest)
+      grid-template-columns: 3fr 1fr
       grid-template-rows: min-content 1fr
-      grid-gap: 5px
+      grid-gap: 0
+      margin: 0
+      padding: 5px
       grid-template-areas: |
         "header sidebar"
         "cal sidebar"
     cards:
-      # --- 1. HEADER AREA (Stack-in-Card with CSS Override) ---
       - type: horizontal-stack
         square: false
         cards:
@@ -99,7 +99,7 @@ views:
                 - entity: calendar.holidays_in_united_states
                   color: "#7e59f8"
                   name: US Holidays
-                - entity: calendar.calendar.holidays_in_israel
+                - entity: calendar.holidays_in_israel
                   color: "#c0fbcd"
                   name: Israel Holidays
               days: 7
@@ -191,6 +191,12 @@ views:
                 - entity: calendar.family
                   name: Family
                   color: "#f6bf26"
+                - entity: calendar.holidays_in_united_states
+                  color: "#7e59f8"
+                  name: US Holidays
+                - entity: calendar.holidays_in_israel
+                  color: "#c0fbcd"
+                  name: Israel Holidays
               card_mod:
                 style: |
                   ha-card {
