@@ -6,7 +6,6 @@ kiosk_mode:
     hide_header: true
     hide_sidebar: true
     ignore_entity_settings: true
-
 views:
   - title: Home
     path: home
@@ -58,8 +57,9 @@ views:
                   h2 {
                     font-size: 2.2rem !important;
                     font-weight: 300 !important;
-                    color: #9CA3AF !important;
+                    color: var(--secondary-text-color) !important;
                     margin: 0 !important;
+                    white-space: nowrap;
                   }
           - type: button
             tap_action:
@@ -73,13 +73,10 @@ views:
                   flex: 0 0 60px !important;
                   max-width: 60px !important;
                 }
-
-      # --- 2. CALENDAR AREA (Conditional Logic) ---
       - type: vertical-stack
         view_layout:
           grid-area: cal
         cards:
-          # VIEW A: WEEK PLANNER (OFF)
           - type: conditional
             conditions:
               - entity: input_boolean.calendar_view
@@ -139,7 +136,6 @@ views:
                       right: auto !important;
                       margin-top: 0px !important;
                       font-size: 0.85em !important;
-                      color: #ccc !important;
                       font-weight: normal !important;
                       display: flex !important;
                     }
@@ -167,15 +163,13 @@ views:
                     .day .date .number { font-size: 3em !important; font-weight: bold !important; }
                     .day { border: solid 1px #4a4a4a; padding: 0.2%; width: 13% !important; }
                   }
-
-          # VIEW B: MONTH CALENDAR (ON)
           - type: conditional
             conditions:
               - entity: input_boolean.calendar_view
                 state: "on"
             card:
               type: custom:atomic-calendar-revive
-              name: "Month View"
+              name: Month View
               enableModeChange: true
               defaultMode: Calendar
               maxDaysToShow: 30
@@ -198,18 +192,14 @@ views:
                   color: "#c0fbcd"
                   name: Israel Holidays
               card_mod:
-                style: |
+                style: >
                   ha-card {
                     height: 100% !important;
-                    background: none !important;
                     border: none !important;
                   }
-                  .cal-card { background: none !important; }
-                  .day-header { color: #ccc !important; }
-                  .day-number { color: white !important; }
-                  .currentDay { background-color: #f6bf26 !important; color: black !important; border-radius: 50%; }
 
-      # --- 3. RIGHT COLUMN: SIDEBAR ---
+                  .currentDay { background-color: #f6bf26 !important; color:
+                  black !important; border-radius: 50%; }
       - type: iframe
         url: https://app.todoist.com/app/today
         view_layout:
