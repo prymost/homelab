@@ -65,6 +65,10 @@ Changes are automatically picked up by FluxCD once pushed to the `main` branch.
 ---
 
 ## Common Commands
+- **Switch Context**:
+  - `kubectl config use-context homelab` (Production)
+  - `kubectl config use-context k3d-my-dev-cluster` (Local Dev)
+- **List Contexts**: `kubectl config get-contexts`
 - **Check Flux Sync Status**: `flux get kustomizations`
 - **Manual Flux Reconcile**: `flux reconcile kustomization flux-system --with-source`
 - **View Logs**: `kubectl logs -f -l app=<app-name> -n <namespace>`

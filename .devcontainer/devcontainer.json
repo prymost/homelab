@@ -15,7 +15,7 @@
             "configureZshAsDefaultShell": true
         },
         "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
-            "plugins": "zsh-autosuggestions zsh-syntax-highlighting",
+            "plugins": "zsh-autosuggestions zsh-syntax-highlighting kubectl fluxcd",
             "omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions.git https://github.com/zsh-users/zsh-syntax-highlighting.git"
         },
         "ghcr.io/devcontainers/features/common-utils:2": {
@@ -23,6 +23,15 @@
             "userUid": "1000",
             "userGid": "1000",
             "upgradePackages": "true"
+        },
+        "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+            "version": "latest",
+            "helm": "latest",
+            "minikube": "none"
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "lts",
+            "nodeGypDependencies": false
         }
     },
     "containerEnv": {
@@ -30,7 +39,8 @@
         "ZSH_CUSTOM": "/home/vscode/.oh-my-zsh/custom"
     },
     "mounts": [
-        "source=${localEnv:HOME}/.kube,target=/home/vscode/.kube-host,type=bind,consistency=cached"
+        "source=${localEnv:HOME}/.kube,target=/home/vscode/.kube-host,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.gemini,target=/home/vscode/.gemini,type=bind,consistency=cached"
     ],
     // [1] Use the non-root user provided by the Dockerfile
     // Critical: Give the container nearly all host capabilities
@@ -51,9 +61,12 @@
         }
     },
     // The command to run AFTER the container is created
-    "postCreateCommand": "/bin/sh -c 'if k3d cluster list | grep -q $CLUSTER_NAME; then echo \"Cluster '$CLUSTER_NAME' already exists.\"; else echo \"Cluster '$CLUSTER_NAME' not found. Creating...\"; k3d cluster create $CLUSTER_NAME; fi'",
-    // Find k3s cluster config in case it was lost during image rebuild
-    "postStartCommand": "echo \"export KUBECONFIG=\\\"$(k3d kubeconfig write $CLUSTER_NAME):/home/vscode/.kube-host/config\\\"\" >> /home/vscode/.bashrc",
+    "postCreateCommand": {
+        "gemini-cli": "npm install -g @google/gemini-cli",
+        "k3d-cluster": "/bin/sh -c 'if k3d cluster list | grep -q $CLUSTER_NAME; then echo \"Cluster $CLUSTER_NAME already exists.\"; else echo \"Cluster $CLUSTER_NAME not found. Creating...\"; k3d cluster create $CLUSTER_NAME; fi'"
+    },
+    // Find k3s cluster config in case it was lost during rebuild
+    "postStartCommand": "KUBECONFIG_PATH=$(k3d kubeconfig write $CLUSTER_NAME) && grep -qxF \"export KUBECONFIG=\\\"$KUBECONFIG_PATH:/home/vscode/.kube-host/config\\\"\" /home/vscode/.zshrc || echo \"export KUBECONFIG=\\\"$KUBECONFIG_PATH:/home/vscode/.kube-host/config\\\"\" >> /home/vscode/.zshrc",
     // Ports you want to forward to your local machine (e.g., a service you deploy)
     "forwardPorts": [
         8080,

@@ -42,6 +42,15 @@ The devcontainer is configured with the following features:
 -   **Docker-in-Docker:** Allows you to use Docker commands inside the devcontainer. Needed for k3s to run properly.
 -   **Kubectl:** The command-line tool for interacting with Kubernetes clusters.
 
+### Cluster Management
+
+The devcontainer has access to both the local development cluster (`k3d-my-dev-cluster`) and the production homelab cluster (`homelab`). To switch between them:
+
+-   **To homelab (Production):** `kubectl config use-context homelab`
+-   **To k3d (Local Dev):** `kubectl config use-context k3d-my-dev-cluster`
+
+To list all available contexts: `kubectl config get-contexts`
+
 ## Secret Management
 
 This repository uses a manual, script-based approach for handling sensitive information to avoid committing secrets directly to Git.
