@@ -18,7 +18,6 @@ The repository is organized as follows:
 2.  **Check the `clusters/homelab` directory:** Browse the `clusters/homelab` directory to see the various services and applications that are deployed.
     - flux-system/: FluxCD's own manifests for managing the cluster.
     - kube-system/: Core Kubernetes system configurations, including Traefik.
-    - mealie/: Configuration for the Mealie recipe manager.
     - minecraft/: Configuration for the Minecraft server.
     - monitoring/: Configuration for the monitoring stack (Prometheus, Grafana, Alertmanager).
     - trivy/: Configuration for Trivy vulnerability scanner.

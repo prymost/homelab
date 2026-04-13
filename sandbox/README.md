@@ -37,18 +37,6 @@ helm upgrade nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs
 helm uninstall nfs-subdir-external-provisioner -n nfs-provisioner
 ```
 
-### Mealie
-
-The Mealie application is managed with raw Kubernetes manifests.
-
-```bash
-# Apply all manifests, including network policies
-kubectl apply -k sandbox/mealie/
-
-# Delete all manifests
-kubectl delete -k sandbox/mealie/
-```
-
 ### Home Assistant
 
 The Home Assistant application is managed with raw Kubernetes manifests.

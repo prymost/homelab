@@ -1,6 +1,8 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2026-04-13:
+- Removing Mealie
 2025-12-14:
 - Home Assistant is running with family dashboard
 2025-11-08:
