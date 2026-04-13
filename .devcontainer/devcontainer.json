@@ -8,6 +8,16 @@
         "ghcr.io/devcontainers/features/docker-in-docker:2": {
             "version": "latest"
         },
+        "ghcr.io/devcontainers/features/common-utils": {
+            "installZsh": true,
+            "installOhMyZsh": true,
+            "installOhMyZshConfig": true,
+            "configureZshAsDefaultShell": true
+        },
+        "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
+            "plugins": "zsh-autosuggestions zsh-syntax-highlighting",
+            "omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions.git https://github.com/zsh-users/zsh-syntax-highlighting.git"
+        },
         "ghcr.io/devcontainers/features/common-utils:2": {
             "username": "vscode",
             "userUid": "1000",
@@ -16,7 +26,8 @@
         }
     },
     "containerEnv": {
-        "CLUSTER_NAME": "my-dev-cluster"
+        "CLUSTER_NAME": "my-dev-cluster",
+        "ZSH_CUSTOM": "/home/vscode/.oh-my-zsh/custom"
     },
     "mounts": [
         "source=${localEnv:HOME}/.kube,target=/home/vscode/.kube-host,type=bind,consistency=cached"
