@@ -1,3 +1,9 @@
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeProxy:
+  enabled: false
 prometheus:
   resources:
     requests:
@@ -27,7 +33,7 @@ prometheus:
 prometheus-node-exporter:
   resources:
     limits:
-      cpu: 200m
+      cpu: 500m
       memory: 180Mi
     requests:
       cpu: 100m

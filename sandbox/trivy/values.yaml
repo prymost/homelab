@@ -4,6 +4,7 @@ trivy:
   ignoreUnfixed: true
   podLabels:
     app: trivy
+  timeout: "20m"
   resources:
     requests:
       cpu: 250m
@@ -19,4 +20,4 @@ resources:
     cpu: 100m
     memory: 128Mi
 operator:
-  scanJobTimeout: "10m"
+  scanJobTimeout: "20m"
