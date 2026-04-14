@@ -37,3 +37,10 @@ spec:
           port: 443
         - protocol: TCP
           port: 80
+    # Allow to k8s server
+    - to:
+        - ipBlock:
+            cidr: 10.43.0.1/32
+      ports:
+        - protocol: TCP
+          port: 443

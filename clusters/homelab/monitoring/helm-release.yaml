@@ -5,6 +5,7 @@ metadata:
   namespace: monitoring
 spec:
   interval: 10m
+  timeout: 10m
   chartRef:
     kind: OCIRepository
     name: prometheus-community

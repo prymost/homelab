@@ -1,8 +1,10 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
-2026-04-14:
-- Fixed Trivy Operator egress NetworkPolicies to allow specific access to the Kubernetes API server (10.43.0.1:443)
+2026-04-13:
+- Fixed Trivy Operator egress NetworkPolicies to allow specific access to the Kubernetes API server
+- Fixed Home Assistant and Minecraft NetworkPolicies to allow API server access and corrected broad CIDR exceptions
+- Added resource limits and enabled NetworkPolicy for kube-state-metrics to improve stability and connectivity
 - Updated devcontainer to make it simpler and include gemini cli so it can access both k8s clusters
 - Removing Mealie
 2025-12-14:
