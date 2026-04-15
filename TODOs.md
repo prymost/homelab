@@ -22,3 +22,10 @@ Once a TODO is complete, I will delete it from this list and record it in the [c
     - Fix FluxCD dashboard in grafana. No data
     - Enhance network policies for monitoring stack
     - Compare outputs from Trivy, Kube-bench, Kubescape
+
+- Monitoring & Security Simplification:
+    - Evaluate replacing Prometheus/Alertmanager with **VictoriaMetrics** or **Gatus** for lower resource usage.
+    - Investigate **Botkube** for direct notifications (Discord/Telegram) on pod restarts, OOMKills, and errors.
+    - Compare **Uptime Kuma** vs. **Gatus** for a lightweight "Status Page" and simple service health alerts.
+    - Improve Trivy visibility: Evaluate **Trivy-UI** or Lens extensions to make the "1892 vulnerabilities" actionable.
+    - Refine Trivy alerting: Only notify on *Critical* vulnerabilities in production namespaces to reduce noise.
