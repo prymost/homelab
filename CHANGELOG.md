@@ -1,6 +1,8 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2026-04-18:
+- Changing Trivy to cliet-server mode
 2026-04-13:
 - Fixed Trivy Operator egress NetworkPolicies to allow specific access to the Kubernetes API server
 - Fixed Home Assistant and Minecraft NetworkPolicies to allow API server access and corrected broad CIDR exceptions

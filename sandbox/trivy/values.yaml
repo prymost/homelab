@@ -1,6 +1,7 @@
 serviceMonitor:
   enabled: true
 trivy:
+  mode: ClientServer
   image:
     registry: ghcr.io
     repository: aquasecurity/trivy
@@ -20,6 +21,15 @@ trivy:
     limits:
       cpu: 1000m
       memory: 2Gi
+trivyServer:
+  enabled: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
 resources:
   limits:
     cpu: 1000m
