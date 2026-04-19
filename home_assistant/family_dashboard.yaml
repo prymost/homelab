@@ -201,6 +201,32 @@ views:
 
                   .currentDay { background-color: #f6bf26 !important; color:
                   black !important; border-radius: 50%; }
+      - type: horizontal-stack
+        view_layout:
+          grid-area: footer
+        cards:
+          - type: tile
+            entity: switch.rt_ax88u_openvpn_client_1
+            name: "🇮🇹 Italy"
+            tap_action:
+              action: toggle
+          - type: tile
+            entity: switch.rt_ax88u_openvpn_client_2
+            name: "🇨🇭 Switzerland"
+            tap_action:
+              action: toggle
+          - type: tile
+            entity: switch.rt_ax88u_openvpn_client_3
+            name: "🇨🇦 Canada"
+            tap_action:
+              action: toggle
+        card_mod:
+          style: |
+            ha-card {
+              margin-top: 6px;
+              background: none !important;
+              border: none !important;
+            }
       - type: custom:power-flow-card-plus
         view_layout:
           grid-area: none
