@@ -21,7 +21,6 @@ Once a TODO is complete, I will delete it from this list and record it in the [c
     - Fix Traefik dashboard in grafana. No data
     - Fix FluxCD dashboard in grafana. No data
     - Enhance network policies for monitoring stack
-    - Compare outputs from Trivy, Kube-bench, Kubescape
 
 - Monitoring & Security Simplification:
     - Evaluate replacing Prometheus/Alertmanager with **VictoriaMetrics** or **Gatus** for lower resource usage.

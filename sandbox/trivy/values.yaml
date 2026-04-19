@@ -20,6 +20,10 @@ trivy:
     limits:
       cpu: 1000m
       memory: 2Gi
+operator:
+  builtInTrivyServer: true
+  scanJobTimeout: "30m"
+  infraAssessmentScannerEnabled: false
 resources:
   limits:
     cpu: 1000m
@@ -27,6 +31,3 @@ resources:
   requests:
     cpu: 200m
     memory: 256Mi
-operator:
-  scanJobTimeout: "30m"
-  infraAssessmentScannerEnabled: false
