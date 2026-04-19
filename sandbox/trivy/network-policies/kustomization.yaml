@@ -6,3 +6,4 @@ resources:
   - allow-egress.yaml
   - allow-egress-scans.yaml
   - allow-namespace-traffic.yaml
+  - allow-egress-server.yaml
