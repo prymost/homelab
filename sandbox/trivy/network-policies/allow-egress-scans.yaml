@@ -35,6 +35,14 @@ spec:
       ports:
         - protocol: TCP
           port: 443
+    # Allow to trivy server
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: trivy-server
+      ports:
+        - protocol: TCP
+          port: 4954
     # Allow to k8s server
     - to:
         - ipBlock:
