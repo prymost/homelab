@@ -8,18 +8,6 @@ resources:
   - helm-source.yaml
   - namespace.yaml
 configMapGenerator:
-  - name: monitoring-prometheus-values
+  - name: robusta-values
     files:
-      - values.yaml=../../../sandbox/monitoring/prometheus-values.yaml
-  - name: monitoring-grafana-values
-    files:
-      - values.yaml=../../../sandbox/monitoring/grafana-values.yaml
-  - name: monitoring-alertmanager-values
-    files:
-      - values.yaml=../../../sandbox/monitoring/alertmanager-values.yaml
-  - name: monitoring-dashboards
-    files:
-      - values.yaml=../../../sandbox/monitoring/dashboards.yaml
-  - name: alert-rules
-    files:
-      - values.yaml=../../../sandbox/monitoring/alert-rules.yaml
+      - values.yaml=../../../sandbox/monitoring/robusta-values.yaml

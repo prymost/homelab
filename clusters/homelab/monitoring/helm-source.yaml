@@ -1,10 +1,8 @@
 apiVersion: source.toolkit.fluxcd.io/v1
-kind: OCIRepository
+kind: HelmRepository
 metadata:
-  name: prometheus-community
+  name: robusta
   namespace: monitoring
 spec:
   interval: 60m
-  url: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
-  ref:
-    semver: "78.x.x"
+  url: https://robusta-charts.storage.googleapis.com

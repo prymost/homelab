@@ -1,0 +1,32 @@
+# Robusta configuration
+# Documentation: https://docs.robusta.dev/
+
+clusterName: "homelab"
+
+# Sinks and sensitive config are provided via robusta-secret-values Secret in HelmRelease
+
+# Disable all default playbooks to reduce noise
+builtinPlaybooks: []
+
+customPlaybooks:
+  # 1. Pod crashes and CrashLoopBackOff
+  - triggers:
+      - on_pod_crash_loop: {}
+    actions:
+      - logs_enricher: {}
+      - pod_events_enricher: {}
+
+  # 2. Pod OOMKill events
+  - triggers:
+      - on_pod_oom_killed: {}
+    actions:
+      - pod_oom_killer_enricher: {}
+      - logs_enricher: {}
+      - pod_events_enricher: {}
+
+  # 3. Failed Kubernetes Jobs (specifically Trivy Operator scan jobs)
+  - triggers:
+      - on_job_failure: {}
+    actions:
+      - job_events_enricher: {}
+      - job_pod_enricher: {}

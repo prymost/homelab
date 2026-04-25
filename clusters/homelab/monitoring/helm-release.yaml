@@ -1,23 +1,22 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: kube-prometheus-stack
+  name: robusta
   namespace: monitoring
 spec:
   interval: 10m
   timeout: 10m
-  chartRef:
-    kind: OCIRepository
-    name: prometheus-community
-    namespace: monitoring
+  chart:
+    spec:
+      chart: robusta
+      version: "0.35.x"
+      sourceRef:
+        kind: HelmRepository
+        name: robusta
+        namespace: monitoring
   valuesFrom:
     - kind: ConfigMap
-      name: monitoring-prometheus-values
-    - kind: ConfigMap
-      name: monitoring-grafana-values
-    - kind: ConfigMap
-      name: monitoring-alertmanager-values
-    - kind: ConfigMap
-      name: monitoring-dashboards
-    - kind: ConfigMap
-      name: alert-rules
+      name: robusta-values
+    - kind: Secret
+      name: robusta-secret-values
+      optional: true
