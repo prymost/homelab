@@ -20,17 +20,12 @@ source .env
 
 echo "Creating/updating secrets in Kubernetes..."
 
-# 1. Alertmanager Secret (Traditional key-value pairs)
-kubectl create secret generic alertmanager-email-creds \
-  --from-literal=email_from="$EMAIL_FROM" \
-  --from-literal=email_pass="$EMAIL_PASS" \
-  --from-literal=email_to="$EMAIL_TO" \
-  --namespace=monitoring \
-  --dry-run=client -o yaml | kubectl apply -f -
-
 # 2. Robusta Secret (Constructed values.yaml for Flux merging)
 # This keeps the sensitive mailto URL out of the git repo.
-ROBUSTA_MAILTO="mailtos://$SMTP_USER:$EMAIL_PASS@$SMTP_SERVER?from=$EMAIL_FROM&to=$EMAIL_TO"
+# We must URL-encode the user and password as they might contain spaces or special characters like '@'.
+ENCODED_USER=$(python3 -c "import urllib.parse; print(urllib.parse.quote('''$SMTP_USER'''))")
+ENCODED_PASS=$(python3 -c "import urllib.parse; print(urllib.parse.quote('''$EMAIL_PASS'''))")
+ROBUSTA_MAILTO="mailtos://$ENCODED_USER:$ENCODED_PASS@$SMTP_SERVER?from=$EMAIL_FROM&to=$EMAIL_TO"
 ROBUSTA_YAML=$(cat <<EOF
 sinksConfig:
   - mail_sink:

@@ -43,7 +43,7 @@ To prepare a new node for the homelab:
    ```bash
    ./setup/create_secrets.sh
    ```
-This creates generic Kubernetes secrets (e.g., `alertmanager-email-creds`) in the appropriate namespaces.
+This creates the necessary Kubernetes secrets (e.g., `robusta-secret-values`) in the appropriate namespaces.
 
 ### 3. Development and Testing
 Use the provided **Devcontainer** for a safe testing environment. It includes a local K3s cluster.
