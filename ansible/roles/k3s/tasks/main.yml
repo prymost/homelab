@@ -1,0 +1,8 @@
+---
+- name: Install K3s Master
+  include_tasks: master.yml
+  when: "'k3s_master' in group_names"
+
+- name: Install K3s Agent
+  include_tasks: agent.yml
+  when: "'k3s_agents' in group_names"

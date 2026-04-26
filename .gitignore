@@ -1,3 +1,8 @@
 .env
 tmp/
 conductor/
+
+# Ansible
+ansible/inventory/hosts.yml
+ansible/**/vault.yml
+*.retry

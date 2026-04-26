@@ -1,0 +1,27 @@
+---
+- name: Apply common configuration to all hosts
+  hosts: all
+  become: true
+  roles:
+    - common
+
+- name: Prepare K3s nodes
+  hosts: k3s_cluster
+  become: true
+  roles:
+    - k3s_prep
+
+- name: Install K3s Cluster
+  hosts: k3s_cluster
+  become: true
+  roles:
+    - k3s
+  # We use serial: 1 to ensure the master finishes before agents start
+  # and that we don't restart multiple nodes at once in the future.
+  serial: 1
+
+- name: Configure the Kiosk PC
+  hosts: kiosk
+  become: true
+  roles:
+    - kiosk

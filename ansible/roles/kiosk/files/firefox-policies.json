@@ -1,0 +1,9 @@
+{
+  "policies": {
+    "DisableAppUpdate": true,
+    "Preferences": {
+      "browser.sessionstore.resume_from_crash": false,
+      "browser.sessionstore.max_resumed_crashes": 0
+    }
+  }
+}

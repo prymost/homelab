@@ -18,22 +18,27 @@ This repository contains the **Infrastructure-as-Code (IaC)** and configuration 
 ## Directory Structure
 - **`clusters/homelab/`**: Defines the "live" state of the production cluster. It uses Kustomize to include and patch applications defined in the `sandbox/` directory.
 - **`sandbox/`**: Contains the base configurations and Helm values for all applications.
-- **`setup/`**: Infrastructure bootstrapping scripts.
-    - `debian_bootstrap.sh`: Prepares a fresh Debian install (SSH, static IP, lid sleep, core packages).
-    - `create_secrets.sh`: Helper script to inject Kubernetes secrets from a local `.env` file.
+- **`ansible/`**: Automated infrastructure bootstrapping and configuration.
+    - `homelab.yml`: Main playbook orchestrating all machines.
+    - `roles/`: Modular configuration for `common` OS settings, `k3s` nodes, and `kiosk` PC.
+- **`setup/`**: Legacy infrastructure bootstrapping scripts.
 - **`home_assistant/`**: Application-specific configuration files (e.g., YAML dashboards).
-- **`.devcontainer/`**: A complete local development environment with K3s-in-Docker.
+- **`.devcontainer/`**: A complete local development environment with K3s-in-Docker and Ansible.
 
 ---
 
 ## Key Workflows
 
-### 1. Initial Server Setup
-To prepare a new node for the homelab:
-```bash
-./setup/debian_bootstrap.sh
-```
-*Note: This script is interactive and requires sudo.*
+### 1. Initial Machine Setup (Ansible)
+To prepare a new node or apply configuration changes across the homelab:
+1. Ensure your SSH key is authorized on the target machine.
+2. Update `ansible/inventory/hosts.yml` with the machine details.
+3. Run the playbook:
+   ```bash
+   cd ansible
+   ansible-playbook homelab.yml
+   ```
+*Note: This process is declarative. Running it multiple times is safe and only applies necessary changes.*
 
 ### 2. Secret Management
 **NEVER commit secrets to Git.** This project uses a manual injection strategy:

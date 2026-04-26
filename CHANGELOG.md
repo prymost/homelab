@@ -1,6 +1,8 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2026-04-26:
+- Added Ansible playbook to manage homalab nodes and the kiosk.
 2026-04-24:
 - Replaced Prometheus/Alertmanager/Grafana monitoring stack with lightweight Robusta for reduced resource usage and high-signal alerting
 2026-04-19:

@@ -1,0 +1,35 @@
+---
+- name: Ensure universal packages are installed
+  apt:
+    name:
+      - unattended-upgrades
+      - curl
+    state: present
+    update_cache: yes
+
+- name: Configure SSH Port and Disable Passwords
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - { regexp: '^#?Port', line: "Port {{ ansible_port }}" }
+    - { regexp: '^#?PasswordAuthentication', line: 'PasswordAuthentication no' }
+  notify: Restart SSH
+
+- name: Configure periodic auto-upgrades
+  copy:
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    mode: '0644'
+
+- name: Ensure universal services are enabled and started
+  systemd:
+    name: "{{ item }}"
+    enabled: yes
+    state: started
+  loop:
+    - unattended-upgrades
+    - systemd-timesyncd

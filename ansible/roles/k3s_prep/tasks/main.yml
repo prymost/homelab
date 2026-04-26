@@ -1,0 +1,35 @@
+---
+- name: Ensure k3s-specific packages are installed
+  apt:
+    name:
+      - nfs-common
+      - iptables
+      - ipset
+    state: present
+
+- name: Load required kernel modules
+  modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - xt_set
+    - ip_set
+    - ip_set_hash_net
+
+- name: Ensure kernel modules persist on reboot
+  copy:
+    content: |
+      xt_set
+      ip_set
+      ip_set_hash_net
+    dest: /etc/modules-load.d/k3s.conf
+    mode: '0644'
+
+- name: Prevent Sleep on Lid Close (Laptops)
+  ini_file:
+    path: /etc/systemd/logind.conf
+    section: Login
+    option: HandleLidSwitch
+    value: ignore
+    no_extra_spaces: true
+  notify: Restart Logind

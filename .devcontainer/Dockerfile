@@ -7,6 +7,9 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     ca-certificates \
     docker.io \
     nfs-common \
+    software-properties-common \
+    && add-apt-repository --yes --update ppa:ansible/ansible \
+    && apt-get install -y --no-install-recommends ansible \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

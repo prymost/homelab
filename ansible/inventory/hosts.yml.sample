@@ -1,0 +1,27 @@
+# Homelab Inventory (Sample)
+# Copy this file to hosts.yml and update with your real details.
+# DO NOT COMMIT hosts.yml TO GIT.
+
+all:
+  children:
+    kiosk:
+      hosts:
+        kiosk-pc:
+          ansible_host: your_host_ip # Update with your Kiosk IP
+          ansible_user: your_user    # Your SSH user
+          ansible_port: port         # Your custom SSH port
+          kiosk_user: your_user      # The local user to auto-login/configure
+    k3s_cluster:
+      children:
+        k3s_master:
+          hosts:
+            k3s-node-1:
+              ansible_host: your_host_ip
+              ansible_user: your_user
+              ansible_port: port
+        k3s_agents:
+          hosts:
+            k3s-node-2:
+              ansible_host: your_host_ip
+              ansible_user: your_user
+              ansible_port: port

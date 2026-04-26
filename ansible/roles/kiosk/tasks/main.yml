@@ -1,0 +1,56 @@
+---
+- name: Configure GDM3 Auto-Login
+  ini_file:
+    path: /etc/gdm3/daemon.conf
+    section: daemon
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    no_extra_spaces: true
+  loop:
+    - { option: 'AutomaticLoginEnable', value: 'true' }
+    - { option: 'AutomaticLogin', value: "{{ kiosk_user }}" }
+
+- name: Ensure Firefox policy directory exists
+  file:
+    path: /etc/firefox/policies
+    state: directory
+    mode: '0755'
+
+- name: Apply Firefox policies
+  copy:
+    src: firefox-policies.json
+    dest: /etc/firefox/policies/policies.json
+    mode: '0644'
+
+- name: Ensure autostart directory exists for kiosk user
+  file:
+    path: "/home/{{ kiosk_user }}/.config/autostart"
+    state: directory
+    owner: "{{ kiosk_user }}"
+    group: "{{ kiosk_user }}"
+    mode: '0755'
+
+- name: Create Kiosk autostart entry
+  copy:
+    content: |
+      [Desktop Entry]
+      Type=Application
+      Name=Home Assistant Kiosk
+      Exec=firefox --kiosk 'http://ha.lan/family-dash/home'
+      X-GNOME-Autostart-enabled=true
+    dest: "/home/{{ kiosk_user }}/.config/autostart/kiosk.desktop"
+    owner: "{{ kiosk_user }}"
+    group: "{{ kiosk_user }}"
+    mode: '0644'
+
+- name: Disable GNOME Screen Sleep and Multi-Workspace
+  become: true
+  become_user: "{{ kiosk_user }}"
+  dconf:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+  loop:
+    - { key: "/org/gnome/desktop/session/idle-delay", value: "uint32 0" }
+    - { key: "/org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-timeout", value: "0" }
+    - { key: "/org/gnome/mutter/dynamic-workspaces", value: "false" }
+    - { key: "/org/gnome/desktop/wm/preferences/num-workspaces", value: "1" }

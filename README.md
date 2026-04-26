@@ -7,14 +7,14 @@ This repository contains everything needed to set up and run my personal homelab
 The repository is organized as follows:
 
 -   `.github/`: Contains GitHub Actions workflows for CI/CD, such as automated security scanning.
--   `setup/`: Contains scripts and configurations for initial server setup.
+-   `ansible/`: Ansible playbooks and roles for automated OS-level configuration and K3s bootstrapping.
+-   `setup/`: Contains legacy scripts and configurations for initial server setup.
 -   `clusters/homelab/`: Holds the FluxCD manifests that define the cluster's state. It uses Kustomize to reference configurations from the `sandbox` directory.
 -   `sandbox/`: Contains the raw configuration files (e.g., Helm `values.yaml`) for applications, which are then applied to the cluster from the `clusters` directory.
 
 ## Getting Started
 
 1.  **Explore the `setup` directory:** Start by looking at the scripts in the `setup` directory to understand how the homelab is provisioned and configured.
-    - debian_bootstrap.sh: Initial setup script for Debian-based systems.
 2.  **Check the `clusters/homelab` directory:** Browse the `clusters/homelab` directory to see the various services and applications that are deployed.
     - flux-system/: FluxCD's own manifests for managing the cluster.
     - kube-system/: Core Kubernetes system configurations, including Traefik.
@@ -38,6 +38,7 @@ Once you have these installed, you can open this repository in the devcontainer 
 
 The devcontainer is configured with the following features:
 
+-   **Ansible:** For automated infrastructure management and provisioning.
 -   **K3s:** A lightweight Kubernetes distribution that runs in a Docker container.
 -   **Docker-in-Docker:** Allows you to use Docker commands inside the devcontainer. Needed for k3s to run properly.
 -   **Kubectl:** The command-line tool for interacting with Kubernetes clusters.

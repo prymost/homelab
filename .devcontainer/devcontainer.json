@@ -5,24 +5,20 @@
     },
     // The Docker-in-Docker Feature installs and starts the daemon automatically
     "features": {
-        "ghcr.io/devcontainers/features/docker-in-docker:2": {
-            "version": "latest"
-        },
-        "ghcr.io/devcontainers/features/common-utils": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
             "installZsh": true,
             "installOhMyZsh": true,
             "installOhMyZshConfig": true,
-            "configureZshAsDefaultShell": true
-        },
-        "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
-            "plugins": "zsh-autosuggestions zsh-syntax-highlighting kubectl fluxcd",
-            "omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions.git https://github.com/zsh-users/zsh-syntax-highlighting.git"
-        },
-        "ghcr.io/devcontainers/features/common-utils:2": {
+            "configureZshAsDefaultShell": true,
             "username": "vscode",
             "userUid": "1000",
             "userGid": "1000",
             "upgradePackages": "true"
+        },
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+        "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
+            "plugins": "zsh-autosuggestions zsh-syntax-highlighting kubectl fluxcd",
+            "omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions.git https://github.com/zsh-users/zsh-syntax-highlighting.git"
         },
         "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
             "version": "latest",
@@ -40,7 +36,8 @@
     },
     "mounts": [
         "source=${localEnv:HOME}/.kube,target=/home/vscode/.kube-host,type=bind,consistency=cached",
-        "source=${localEnv:HOME}/.gemini,target=/home/vscode/.gemini,type=bind,consistency=cached"
+        "source=${localEnv:HOME}/.gemini,target=/home/vscode/.gemini,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
     ],
     // [1] Use the non-root user provided by the Dockerfile
     // Critical: Give the container nearly all host capabilities
@@ -56,7 +53,8 @@
         "vscode": {
             "extensions": [
                 "ms-kubernetes-tools.vscode-kubernetes-tools",
-                "redhat.vscode-yaml"
+                "redhat.vscode-yaml",
+                "redhat.ansible"
             ]
         }
     },
