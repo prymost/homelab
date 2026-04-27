@@ -11,7 +11,7 @@ trivy:
   ignoreUnfixed: true
   podLabels:
     app: trivy
-  timeout: "30m"
+  timeout: "60m"
   severity: "MEDIUM,HIGH,CRITICAL"
   resources:
     requests:
@@ -19,7 +19,7 @@ trivy:
       memory: 512Mi
     limits:
       cpu: 1000m
-      memory: 2Gi
+      memory: 4Gi
   server:
     resources:
       requests:
@@ -27,10 +27,10 @@ trivy:
         memory: 1Gi
       limits:
         cpu: 1000m
-        memory: 2Gi
+        memory: 4Gi
 operator:
   builtInTrivyServer: true
-  scanJobTimeout: "30m"
+  scanJobTimeout: "60m"
   infraAssessmentScannerEnabled: false
   scanJobPodTemplateContainerSecurityContext:
     readOnlyRootFilesystem: false
