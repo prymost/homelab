@@ -1,6 +1,10 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2026-04-28:
+- Improved kiosk resiliency by adding an auto-restart loop and an idle-reset monitor.
+- Updated Ansible kiosk role to deploy launcher and monitor scripts to ~/.local/bin.
+- Configured GNOME autostart entries for persistent dashboard availability.
 2026-04-27:
 - Fixed Trivy server NetworkPolicy to use correct 'app: trivy' labels
 - Increased Trivy server and scan job memory limits to 4Gi to support large images (Home Assistant)

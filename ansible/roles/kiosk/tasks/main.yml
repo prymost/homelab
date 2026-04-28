@@ -24,24 +24,62 @@
 
 - name: Ensure autostart directory exists for kiosk user
   file:
-    path: "/home/{{ kiosk_user }}/.config/autostart"
+    path: "{{ item }}"
     state: directory
     owner: "{{ kiosk_user }}"
     group: "{{ kiosk_user }}"
     mode: '0755'
+  loop:
+    - "/home/{{ kiosk_user }}/.config/autostart"
+    - "/home/{{ kiosk_user }}/.local/bin"
 
-- name: Create Kiosk autostart entry
+- name: Create Kiosk launcher script
+  copy:
+    content: |
+      #!/bin/bash
+      while true; do
+          firefox --kiosk 'http://ha.lan/family-dash/home'
+          sleep 2
+      done
+    dest: "/home/{{ kiosk_user }}/.local/bin/kiosk-launcher.sh"
+    owner: "{{ kiosk_user }}"
+    group: "{{ kiosk_user }}"
+    mode: '0755'
+
+- name: Create Kiosk idle monitor script
+  copy:
+    content: |
+      #!/bin/bash
+      TIMEOUT_MS=60000 # 60 seconds
+      while true; do
+          IDLE_TIME=$(gdbus call --session --dest org.gnome.Mutter.IdleMonitor --object-path /org/gnome/Mutter/IdleMonitor/Core --method org.gnome.Mutter.IdleMonitor.GetIdletime | awk '{print $2}' | tr -d ',')
+          
+          if [ -n "$IDLE_TIME" ] && [ "$IDLE_TIME" -gt "$TIMEOUT_MS" ]; then
+              killall firefox
+              sleep 10
+          fi
+          sleep 5
+      done
+    dest: "/home/{{ kiosk_user }}/.local/bin/kiosk-idle-monitor.sh"
+    owner: "{{ kiosk_user }}"
+    group: "{{ kiosk_user }}"
+    mode: '0755'
+
+- name: Create Kiosk autostart entries
   copy:
     content: |
       [Desktop Entry]
       Type=Application
-      Name=Home Assistant Kiosk
-      Exec=firefox --kiosk 'http://ha.lan/family-dash/home'
+      Name={{ item.name }}
+      Exec={{ item.exec }}
       X-GNOME-Autostart-enabled=true
-    dest: "/home/{{ kiosk_user }}/.config/autostart/kiosk.desktop"
+    dest: "/home/{{ kiosk_user }}/.config/autostart/{{ item.dest }}"
     owner: "{{ kiosk_user }}"
     group: "{{ kiosk_user }}"
     mode: '0644'
+  loop:
+    - { name: 'Home Assistant Kiosk Launcher', exec: "/home/{{ kiosk_user }}/.local/bin/kiosk-launcher.sh", dest: 'kiosk.desktop' }
+    - { name: 'Kiosk Idle Monitor', exec: "/home/{{ kiosk_user }}/.local/bin/kiosk-idle-monitor.sh", dest: 'idle-monitor.desktop' }
 
 - name: Disable GNOME Screen Sleep and Multi-Workspace
   become: true
