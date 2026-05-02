@@ -13,7 +13,6 @@ trivy:
     app: trivy
   timeout: "60m"
   severity: "MEDIUM,HIGH,CRITICAL"
-  excludeNamespaces: "kube-system"
   resources:
     requests:
       cpu: 250m
@@ -30,6 +29,7 @@ trivy:
         cpu: 1000m
         memory: 4Gi
 operator:
+  excludeNamespaces: "kube-system"
   builtInTrivyServer: true
   scanJobTimeout: "60m"
   infraAssessmentScannerEnabled: false
