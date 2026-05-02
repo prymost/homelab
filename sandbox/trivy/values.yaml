@@ -30,6 +30,9 @@ trivy:
         memory: 4Gi
 operator:
   excludeNamespaces: "kube-system"
+  env:
+    - name: OPERATOR_EXCLUDE_NAMESPACES
+      value: "kube-system"
   builtInTrivyServer: true
   scanJobTimeout: "60m"
   infraAssessmentScannerEnabled: false
