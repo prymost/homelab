@@ -13,6 +13,7 @@ trivy:
     app: trivy
   timeout: "60m"
   severity: "MEDIUM,HIGH,CRITICAL"
+  excludeNamespaces: "kube-system"
   resources:
     requests:
       cpu: 250m
