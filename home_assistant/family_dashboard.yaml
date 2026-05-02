@@ -21,269 +21,205 @@ views:
         "cal sidebar"
         "footer none"
     cards:
-      - type: custom:config-template-card
-        entities:
-          - input_number.calendar_offset
-          - input_boolean.calendar_view
-        variables:
-          OFFSET: >-
-            (states['input_number.calendar_offset'] ?
-            states['input_number.calendar_offset'].state : 0)
-        card:
-          type: horizontal-stack
-          square: false
-          cards:
-            - type: markdown
-              content: >
-                <h1>{{ now().strftime('%-I:%M %p') }}</h1> <h2>{{
-                now().strftime('%A, %B %-d') }}</h2>
-              card_mod:
-                style:
-                  .: |
-                    ha-card {
-                      background: none !important;
-                      border: none !important;
-                      box-shadow: none !important;
-                      padding: 0 0 0 0 !important;
-                    }
-                  ha-markdown$: |
-                    ha-markdown-element {
-                      display: flex !important;
-                      flex-direction: row !important; /* Forces side-by-side */
-                      align-items: baseline !important; /* Aligns text bottom */
-                      gap: 30px !important; /* Space between Time and Date */
-                      padding: 0
-                    }
+      - type: horizontal-stack
+        square: false
+        cards:
+          - type: markdown
+            content: >
+              <h1>{{ now().strftime('%-I:%M %p') }}</h1> <h2>{{
+              now().strftime('%A, %B %-d') }}</h2>
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    background: none !important;
+                    border: none !important;
+                    box-shadow: none !important;
+                    padding: 0 0 0 0 !important;
+                  }
+                ha-markdown$: |
+                  ha-markdown-element {
+                    display: flex !important;
+                    flex-direction: row !important; /* Forces side-by-side */
+                    align-items: baseline !important; /* Aligns text bottom */
+                    gap: 30px !important; /* Space between Time and Date */
+                    padding: 0
+                  }
 
-                    /* Style the H1 (Time) */
-                    h1 {
-                      font-size: 4rem !important;
-                      font-weight: 600 !important;
-                      margin: 0 !important;
-                      line-height: 1 !important;
-                    }
+                  /* Style the H1 (Time) */
+                  h1 {
+                    font-size: 4rem !important;
+                    font-weight: 600 !important;
+                    margin: 0 !important;
+                    line-height: 1 !important;
+                  }
 
-                    /* Style the H2 (Date) */
-                    h2 {
-                      font-size: 2.2rem !important;
-                      font-weight: 300 !important;
-                      color: var(--secondary-text-color) !important;
-                      margin: 0 !important;
-                      white-space: nowrap;
-                    }
-            - type: button
-              icon: mdi:chevron-left
-              show_name: false
-              tap_action:
-                action: call-service
-                service: input_number.set_value
-                data:
-                  entity_id: input_number.calendar_offset
-                  value: ${Number(OFFSET) - 7}
-              card_mod:
-                style: |
-                  :host {
-                    flex: 0 0 60px !important;
-                    max-width: 60px !important;
+                  /* Style the H2 (Date) */
+                  h2 {
+                    font-size: 2.2rem !important;
+                    font-weight: 300 !important;
+                    color: var(--secondary-text-color) !important;
+                    margin: 0 !important;
+                    white-space: nowrap;
                   }
-            - type: button
-              icon: mdi:calendar-today
-              show_name: false
-              tap_action:
-                action: call-service
-                service: input_number.set_value
-                data:
-                  entity_id: input_number.calendar_offset
-                  value: 0
-              card_mod:
-                style: |
-                  :host {
-                    flex: 0 0 60px !important;
-                    max-width: 60px !important;
-                  }
-            - type: button
-              icon: mdi:chevron-right
-              show_name: false
-              tap_action:
-                action: call-service
-                service: input_number.set_value
-                data:
-                  entity_id: input_number.calendar_offset
-                  value: ${Number(OFFSET) + 7}
-              card_mod:
-                style: |
-                  :host {
-                    flex: 0 0 60px !important;
-                    max-width: 60px !important;
-                  }
-            - type: button
-              tap_action:
-                action: toggle
-              entity: input_boolean.calendar_view
-              icon: mdi:calendar-month
-              show_name: false
-              card_mod:
-                style: |
-                  :host {
-                    flex: 0 0 60px !important;
-                    max-width: 60px !important;
-                  }
-      - type: custom:config-template-card
-        entities:
-          - input_number.calendar_offset
-          - input_boolean.calendar_view
-        variables:
-          OFFSET: >-
-            (states['input_number.calendar_offset'] ?
-            states['input_number.calendar_offset'].state : 0)
+          - type: button
+            tap_action:
+              action: toggle
+            entity: input_boolean.calendar_view
+            icon: mdi:calendar-month
+            show_name: false
+            card_mod:
+              style: |
+                :host {
+                  flex: 0 0 60px !important;
+                  max-width: 60px !important;
+                }
+      - type: vertical-stack
         view_layout:
           grid-area: cal
-        card:
-          type: vertical-stack
-          cards:
-            - type: conditional
-              conditions:
-                - entity: input_boolean.calendar_view
-                  state: "off"
-              card:
-                type: custom:week-planner-card
-                startingDayOffset: ${Number(OFFSET)}
-                calendars:
-                  - entity: calendar.bo_cal
-                    color: "#4285F4"
-                    name: Dad
-                  - entity: calendar.nata_cal
-                    color: "#ae9cce"
-                    name: Mom
-                  - entity: calendar.family
-                    color: "#f6bf26"
-                    name: Family
-                  - entity: calendar.holidays_in_united_states
-                    color: "#7e59f8"
-                    name: US Holidays
-                  - entity: calendar.holidays_in_israel
-                    color: "#c0fbcd"
-                    name: Israel Holidays
-                days: 7
-                mode: week
-                timeFormat: h:mm a
-                border: false
-                texts:
-                  fullDay: " "
-                weather:
-                  showCondition: true
-                  showTemperature: true
-                  showLowTemperature: true
-                  useTwiceDaily: false
-                  entity: weather.forecast_home
-                card_mod:
-                  style: |
-                    ha-card {
-                      height: 100% !important;
-                      --days-spacing: 5px !important;
-                      --events-margin-top: 5px !important;
-                      --event-padding: 3px;
+        cards:
+          - type: conditional
+            conditions:
+              - entity: input_boolean.calendar_view
+                state: "off"
+            card:
+              type: custom:week-planner-card
+              showNavigation: true
+              calendars:
+                - entity: calendar.bo_cal
+                  color: "#4285F4"
+                  name: Dad
+                - entity: calendar.nata_cal
+                  color: "#ae9cce"
+                  name: Mom
+                - entity: calendar.family
+                  color: "#f6bf26"
+                  name: Family
+                - entity: calendar.holidays_in_united_states
+                  color: "#7e59f8"
+                  name: US Holidays
+                - entity: calendar.holidays_in_israel
+                  color: "#c0fbcd"
+                  name: Israel Holidays
+              days: 7
+              mode: week
+              timeFormat: h:mm a
+              border: false
+              texts:
+                fullDay: " "
+              weather:
+                showCondition: true
+                showTemperature: true
+                showLowTemperature: true
+                useTwiceDaily: false
+                entity: weather.forecast_home
+              card_mod:
+                style: |
+                  ha-card {
+                    height: 100% !important;
+                    --days-spacing: 5px !important;
+                    --events-margin-top: 5px !important;
+                    --event-padding: 3px;
 
-                      /* --- RESTORED WEATHER FIXES --- */
-                      /* 1. Force Header to Stack (Date Top, Weather Bottom) */
-                      .header {
-                        display: flex !important;
-                        flex-direction: column !important;
-                        align-items: flex-start !important;
-                        padding: 5px !important;
-                        margin-bottom: 5px !important;
-                      }
-
-                      /* 2. Fix Weather Positioning (Stop Floating) */
-                      .weather {
-                        position: relative !important;
-                        top: auto !important;
-                        right: auto !important;
-                        margin-top: 0px !important;
-                        font-size: 0.85em !important;
-                        font-weight: normal !important;
-                        display: flex !important;
-                      }
-
-                      /* General Styles */
-                      .event.past { opacity: .2; background-color: gray !important; }
-                      .time { color: #333333 !important; font-size: 0.8em !important; }
-                      .event {
-                        color: #333333 !important;
-                        padding: 1px 4px !important;
-                        margin-bottom: 3px !important;
-                        line-height: 1.1 !important;
-                        background-color: var(--border-color) !important;
-                        border-radius: 10px !important;
-                        max-height: 80px !important;
-                        overflow: hidden !important;
-                        font-size: 1em !important;
-                      }
-                      .none { background-color: transparent !important; }
-                      .today .number {
-                         border-radius: 5px;
-                         background-color: orange !important;
-                         padding: 0 4px;
-                      }
-                      .day .date .number { font-size: 3em !important; font-weight: bold !important; }
-                      .day { border: solid 1px #4a4a4a; padding: 0.2%; width: 13% !important; }
-                    }
-            - type: conditional
-              conditions:
-                - entity: input_boolean.calendar_view
-                  state: "on"
-              card:
-                type: custom:atomic-calendar-revive
-                name: Month View
-                enableModeChange: true
-                defaultMode: Calendar
-                maxDaysToShow: 30
-                firstDayOfWeek: 1
-                showDate: true
-                disableCalLink: true
-                startDaysAhead: ${Number(OFFSET)}
-                entities:
-                  - entity: calendar.bo_cal
-                    name: Dad
-                    color: "#4285F4"
-                  - entity: calendar.nata_cal
-                    name: Mom
-                    color: "#ae9cce"
-                  - entity: calendar.family
-                    name: Family
-                    color: "#f6bf26"
-                  - entity: calendar.holidays_in_united_states
-                    color: "#7e59f8"
-                    name: US Holidays
-                  - entity: calendar.holidays_in_israel
-                    color: "#c0fbcd"
-                    name: Israel Holidays
-                card_mod:
-                  style: >
-                    ha-card {
-                      height: 100% !important;
-                      border: none !important;
+                    /* --- RESTORED WEATHER FIXES --- */
+                    /* 1. Force Header to Stack (Date Top, Weather Bottom) */
+                    .header {
+                      display: flex !important;
+                      flex-direction: column !important;
+                      align-items: flex-start !important;
+                      padding: 5px !important;
+                      margin-bottom: 5px !important;
                     }
 
-                    .currentDay { background-color: #f6bf26 !important; color:
-                    black !important; border-radius: 50%; }
+                    /* 2. Fix Weather Positioning (Stop Floating) */
+                    .weather {
+                      position: relative !important;
+                      top: auto !important;
+                      right: auto !important;
+                      margin-top: 0px !important;
+                      font-size: 0.85em !important;
+                      font-weight: normal !important;
+                      display: flex !important;
+                    }
+
+                    /* General Styles */
+                    .event.past { opacity: .2; background-color: gray !important; }
+                    .time { color: #333333 !important; font-size: 0.8em !important; }
+                    .event {
+                      color: #333333 !important;
+                      padding: 1px 4px !important;
+                      margin-bottom: 3px !important;
+                      line-height: 1.1 !important;
+                      background-color: var(--border-color) !important;
+                      border-radius: 10px !important;
+                      max-height: 80px !important;
+                      overflow: hidden !important;
+                      font-size: 1em !important;
+                    }
+                    .none { background-color: transparent !important; }
+                    .today .number {
+                       border-radius: 5px;
+                       background-color: orange !important;
+                       padding: 0 4px;
+                    }
+                    .day .date .number { font-size: 3em !important; font-weight: bold !important; }
+                    .day { border: solid 1px #4a4a4a; padding: 0.2%; width: 13% !important; }
+                  }
+          - type: conditional
+            conditions:
+              - entity: input_boolean.calendar_view
+                state: "on"
+            card:
+              type: custom:atomic-calendar-revive
+              name: Month View
+              enableModeChange: true
+              defaultMode: Calendar
+              maxDaysToShow: 30
+              firstDayOfWeek: 1
+              showDate: true
+              disableCalLink: true
+              entities:
+                - entity: calendar.bo_cal
+                  name: Dad
+                  color: "#4285F4"
+                - entity: calendar.nata_cal
+                  name: Mom
+                  color: "#ae9cce"
+                - entity: calendar.family
+                  name: Family
+                  color: "#f6bf26"
+                - entity: calendar.holidays_in_united_states
+                  color: "#7e59f8"
+                  name: US Holidays
+                - entity: calendar.holidays_in_israel
+                  color: "#c0fbcd"
+                  name: Israel Holidays
+              card_mod:
+                style: >
+                  ha-card {
+                    height: 100% !important;
+                    border: none !important;
+                  }
+
+                  .currentDay { background-color: #f6bf26 !important; color:
+                  black !important; border-radius: 50%; }
       - type: horizontal-stack
         view_layout:
           grid-area: footer
         cards:
           - type: tile
             entity: switch.rt_ax88u_openvpn_client_1
-            name: 🇮🇹 Italy
+            name: "🇮🇹 Italy"
             tap_action:
               action: toggle
           - type: tile
             entity: switch.rt_ax88u_openvpn_client_2
-            name: 🇨🇭 Switzerland
+            name: "🇨🇭 Switzerland"
             tap_action:
               action: toggle
           - type: tile
             entity: switch.rt_ax88u_openvpn_client_3
-            name: 🇨🇦 Canada
+            name: "🇨🇦 Canada"
             tap_action:
               action: toggle
         card_mod:
