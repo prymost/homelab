@@ -1,3 +1,4 @@
+excludeNamespaces: "kube-system"
 serviceMonitor:
   enabled: true
 trivy:
@@ -12,7 +13,7 @@ trivy:
   podLabels:
     app: trivy
   timeout: "60m"
-  severity: "MEDIUM,HIGH,CRITICAL"
+  severity: "HIGH,CRITICAL"
   resources:
     requests:
       cpu: 250m
@@ -28,11 +29,10 @@ trivy:
       limits:
         cpu: 1000m
         memory: 4Gi
+  extraEnv:
+    - name: TRIVY_MAX_RECEIVE_MESSAGE_SIZE
+      value: "10Mi"
 operator:
-  excludeNamespaces: "kube-system"
-  env:
-    - name: OPERATOR_EXCLUDE_NAMESPACES
-      value: "kube-system"
   builtInTrivyServer: true
   scanJobTimeout: "60m"
   infraAssessmentScannerEnabled: false
@@ -43,6 +43,9 @@ operator:
       drop:
         - ALL
     privileged: false
+  env:
+    - name: TRIVY_MAX_RECEIVE_MESSAGE_SIZE
+      value: "10Mi"
 resources:
   limits:
     cpu: 1000m
