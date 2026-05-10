@@ -11,7 +11,7 @@ resources:
   limits:
     memory: 8192Mi
     cpu: 970m
-strategyType: RollingUpdate
+strategyType: Recreate
 podSecurityContext:
   runAsNonRoot: true
 
