@@ -1,6 +1,10 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2026-05-22:
+- Migrated devcontainer configuration from legacy Gemini CLI to Antigravity CLI.
+- Replaced GEMINI.md with ANTIGRAVITY.md.
+
 2026-04-28:
 - Improved kiosk resiliency by adding an auto-restart loop and an idle-reset monitor.
 - Updated Ansible kiosk role to deploy launcher and monitor scripts to ~/.local/bin.

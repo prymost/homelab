@@ -32,7 +32,11 @@
     },
     "containerEnv": {
         "CLUSTER_NAME": "my-dev-cluster",
-        "ZSH_CUSTOM": "/home/vscode/.oh-my-zsh/custom"
+        "ZSH_CUSTOM": "/home/vscode/.oh-my-zsh/custom",
+        // Force the Antigravity CLI to use file-based token storage (~/.gemini/antigravity-cli/antigravity-oauth-token)
+        // instead of looking for a system keyring, which is unavailable in the devcontainer.
+        // This is a dummy environment variable that does NOT start an SSH daemon or open any real ports.
+        "SSH_CONNECTION": "127.0.0.1 56789 127.0.0.1 22"
     },
     "mounts": [
         "source=${localEnv:HOME}/.kube,target=/home/vscode/.kube-host,type=bind,consistency=cached",
@@ -60,7 +64,7 @@
     },
     // The command to run AFTER the container is created
     "postCreateCommand": {
-        "gemini-cli": "npm install -g @google/gemini-cli",
+        "antigravity-cli": "curl -fsSL https://antigravity.google/cli/install.sh | bash",
         "k3d-cluster": "/bin/sh -c 'if k3d cluster list | grep -q $CLUSTER_NAME; then echo \"Cluster $CLUSTER_NAME already exists.\"; else echo \"Cluster $CLUSTER_NAME not found. Creating...\"; k3d cluster create $CLUSTER_NAME; fi'"
     },
     // Find k3s cluster config in case it was lost during rebuild
