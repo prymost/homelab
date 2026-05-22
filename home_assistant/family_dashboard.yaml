@@ -222,6 +222,11 @@ views:
             name: "🇨🇦 Canada"
             tap_action:
               action: toggle
+          - type: tile
+            entity: switch.rt_ax88u_openvpn_client_4
+            name: "🇪🇸 Spain"
+            tap_action:
+              action: toggle
         card_mod:
           style: |
             ha-card {
