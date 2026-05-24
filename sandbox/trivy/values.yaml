@@ -40,6 +40,8 @@ operator:
   env:
     - name: TRIVY_MAX_RECEIVE_MESSAGE_SIZE
       value: "10Mi"
+    - name: OPERATOR_SCAN_JOB_POD_TEMPLATE_CONTAINER_SECURITY_CONTEXT
+      value: '{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"privileged":false,"readOnlyRootFilesystem":false}'
 trivyOperator:
   scanJobPodTemplateContainerSecurityContext:
     readOnlyRootFilesystem: false
