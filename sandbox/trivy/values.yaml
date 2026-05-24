@@ -5,7 +5,7 @@ trivy:
   image:
     registry: ghcr.io
     repository: aquasecurity/trivy
-  imageScanCacheDir: "/var/trivy/.cache"
+  imageScanCacheDir: "/home/scanner/.cache/trivy"
   dbRegistry: ghcr.io
   dbRepository: aquasecurity/trivy-db
   javaDbRegistry: ghcr.io
