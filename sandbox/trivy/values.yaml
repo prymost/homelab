@@ -37,6 +37,10 @@ operator:
   builtInTrivyServer: true
   scanJobTimeout: "60m"
   infraAssessmentScannerEnabled: false
+  env:
+    - name: TRIVY_MAX_RECEIVE_MESSAGE_SIZE
+      value: "10Mi"
+trivyOperator:
   scanJobPodTemplateContainerSecurityContext:
     readOnlyRootFilesystem: false
     allowPrivilegeEscalation: false
@@ -44,9 +48,6 @@ operator:
       drop:
         - ALL
     privileged: false
-  env:
-    - name: TRIVY_MAX_RECEIVE_MESSAGE_SIZE
-      value: "10Mi"
 resources:
   limits:
     cpu: 1000m
