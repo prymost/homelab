@@ -111,8 +111,8 @@ views:
                 showCondition: true
                 showTemperature: true
                 showLowTemperature: true
-                useTwiceDaily: false
-                entity: weather.forecast_home
+                useTwiceDaily: true
+                entity: weather.kccr
               card_mod:
                 style: |
                   ha-card {
