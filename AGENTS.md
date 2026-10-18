@@ -62,9 +62,27 @@ Changes are automatically picked up by FluxCD once pushed to the `main` branch.
 ---
 
 ## Development Conventions
+- **Security First**: Security is the top priority for this Kubernetes cluster. All workloads, manifests, and configurations must be hardened by default to prevent rogue containers and unauthorized access:
+  - **Workload Hardening**: Every pod/container must define an explicit `securityContext`:
+    - `runAsNonRoot: true` (with non-root UID/GID)
+    - `allowPrivilegeEscalation: false`
+    - `readOnlyRootFilesystem: true` (use explicit `emptyDir` or PVC volumes for writable caches/tmp/data)
+    - `capabilities: drop: ["ALL"]` (only add specific Linux capabilities if demonstrably essential)
+    - `seccompProfile: { type: "RuntimeDefault" }`
+  - **Token Protection**: Explicitly set `automountServiceAccountToken: false` on pods and service accounts unless the workload genuinely communicates with the Kubernetes API.
+  - **Image Pinning**: Always pin container images to specific semantic version tags or immutable digests. Never use `:latest` or untagged images.
+  - **Network Isolation**: Every application in `sandbox/` must include a `network-policies/` directory with `default-deny.yaml` (blocking all ingress and egress) and explicit, least-privilege allow rules. Do not allow egress to the Kubernetes API server (`10.43.0.1:443`) unless the application is a cluster controller.
+  - **Secret Hygiene**: Never commit secrets or `.env` files to Git; avoid passing sensitive values as command-line arguments (visible in `ps aux`).
+- **Operational Continuity & Non-Breaking Verification**:
+  - Security hardening must never compromise legitimate homelab functionality.
+  - Whenever security policies or network restrictions are introduced or modified, explicitly test and verify end-to-end functionality:
+    - Minecraft server connectivity from local computers/laptops (port 25565 TCP).
+    - Home Assistant dashboard access (`ha.lan`), integrations, and local smart device discovery.
+    - NFS persistent storage mounts and write permissions.
+    - Monitoring and alert forwarding (Robusta/Prometheus).
+  - Never over-restrict network policies blindly. If uncertain whether a port or network path is required by an integration, pause and confirm with Boris before applying.
 - **GitOps First**: All cluster changes must be made through Git commits. Avoid `kubectl edit` on live resources.
 - **Separation of Concerns**: Keep base manifests/values in `sandbox/` and cluster-specific overlays in `clusters/`.
-- **Network Security**: Every application in `sandbox/` should include a `network-policies/` directory with at least a `default-deny.yaml` and necessary allow rules.
 - **Documentation**: Keep `CHANGELOG.md` updated and use `TODOs.md` for task tracking.
 
 ---
