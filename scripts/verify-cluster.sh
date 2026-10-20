@@ -145,7 +145,9 @@ wait_for_flux_sync() {
 
     if [[ "$kustomize_ready" == "True" && "$kustomize_rev" == *"$target_sha"* ]]; then
       log_pass "FluxCD successfully reconciled commit ${short_sha} (${kustomize_rev})"
-      sleep 5
+      # Wait for active workload deployments to finish rolling out
+      kubectl rollout status deployment -n home-assistant home-assistant --timeout=90s >/dev/null 2>&1 || true
+      sleep 3
       break
     fi
 
