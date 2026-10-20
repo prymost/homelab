@@ -15,10 +15,14 @@ spec:
       labels:
         app: home-assistant
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       # --- Init Container for HACS Installation ---
       initContainers:
         - name: install-hacs
-          image: alpine:latest
+          image: alpine:3.21.3
           command: ["/bin/sh", "-c"]
           args:
             - |
@@ -31,6 +35,20 @@ spec:
               else
                 echo "HACS already installed. Skipping."
               fi
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
           volumeMounts:
             - mountPath: /config
               name: config
