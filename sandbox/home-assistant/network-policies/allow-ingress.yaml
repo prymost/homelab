@@ -23,6 +23,8 @@ spec:
     - from:
         - ipBlock:
             cidr: 192.168.50.119/32 # homelab1
+        - ipBlock:
+            cidr: 192.168.50.120/32 # homelab2
       ports:
         - protocol: TCP
           port: 8123
