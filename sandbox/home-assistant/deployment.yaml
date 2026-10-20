@@ -75,6 +75,12 @@ spec:
               port: 8123
             initialDelaySeconds: 120
             periodSeconds: 60
+          readinessProbe: # Don't route traffic or finish rollout until HA HTTP is up
+            httpGet:
+              path: /
+              port: 8123
+            initialDelaySeconds: 15
+            periodSeconds: 5
           resources:
             requests:
               memory: "512Mi"
