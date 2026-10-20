@@ -1,6 +1,13 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2026-10-20:
+- Built autonomous cluster verification suite (`scripts/verify-cluster.sh`) with 21 live health checks and `--wait-sync` FluxCD reconciliation polling.
+- Built autonomous rollback script (`scripts/rollback.sh`) to automatically revert breaking commits and restore green cluster state.
+- Enforced least-privilege network policies (`default-deny`, DNS, K8s API, and storage/external egress) for `nfs-provisioner` and `monitoring` namespaces.
+- Pruned Kubernetes API egress (`10.43.0.1:443`) from `home-assistant` and `minecraft` workloads.
+- Expanded `home-assistant` ingress NetworkPolicy to explicitly allow multi-node routing via `homelab2`.
+
 2026-05-22:
 - Migrated devcontainer configuration from legacy Gemini CLI to Antigravity CLI.
 - Replaced GEMINI.md with ANTIGRAVITY.md.

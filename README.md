@@ -8,6 +8,7 @@ The repository is organized as follows:
 
 -   `.github/`: Contains GitHub Actions workflows for CI/CD, such as automated security scanning.
 -   `ansible/`: Ansible playbooks and roles for automated OS-level configuration and K3s bootstrapping.
+-   `scripts/`: Verification and autonomous rollback automation tools (`verify-cluster.sh`, `rollback.sh`).
 -   `setup/`: Contains legacy scripts and configurations for initial server setup.
 -   `clusters/homelab/`: Holds the FluxCD manifests that define the cluster's state. It uses Kustomize to reference configurations from the `sandbox` directory.
 -   `sandbox/`: Contains the raw configuration files (e.g., Helm `values.yaml`) for applications, which are then applied to the cluster from the `clusters` directory.
@@ -18,8 +19,10 @@ The repository is organized as follows:
 2.  **Check the `clusters/homelab` directory:** Browse the `clusters/homelab` directory to see the various services and applications that are deployed.
     - flux-system/: FluxCD's own manifests for managing the cluster.
     - kube-system/: Core Kubernetes system configurations, including Traefik.
+    - home-assistant/: Smart home automation platform and dashboard.
     - minecraft/: Configuration for the Minecraft server.
-    - monitoring/: Configuration for the monitoring stack (Prometheus, Grafana, Alertmanager).
+    - monitoring/: Robusta monitoring stack for automated Kubernetes alert dispatch and event enrichment.
+    - nfs-provisioner/: Dynamic persistent volume provisioner backed by NAS NFS storage.
     - trivy/: Configuration for Trivy vulnerability scanner.
 
 ## Development Environment
@@ -90,4 +93,15 @@ If you have set up ingress for a service in the devcontainer, you can test it wi
 
 ```bash
 curl -I -H "Host: <dedicated-hostname>" http://localhost:8080
+```
+
+### Cluster Health Verification
+To verify the end-to-end health of all cluster workloads, storage mounts, network policies, and FluxCD GitOps synchronization:
+
+```bash
+# Run 21 automated cluster health checks
+./scripts/verify-cluster.sh
+
+# Trigger Flux sync and wait for latest commit to reconcile before checking
+./scripts/verify-cluster.sh --wait-sync
 ```

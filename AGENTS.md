@@ -9,7 +9,7 @@ This repository contains the **Infrastructure-as-Code (IaC)** and configuration 
 - **Kustomize:** Orchestrates and patches Kubernetes manifests.
 - **Helm:** Manages application deployments via Flux `HelmRelease` resources.
 - **Traefik:** Acts as the Ingress controller and reverse proxy.
-- **Monitoring Stack:** Prometheus, Grafana, and Alertmanager for observability.
+- **Monitoring Stack:** Robusta for Kubernetes event monitoring, alerting, and automated troubleshooting.
 - **Security:** Trivy for vulnerability scanning of images and manifests.
 - **Applications:** Home Assistant (smart home), Minecraft server, and NFS provisioner for storage.
 
@@ -18,6 +18,7 @@ This repository contains the **Infrastructure-as-Code (IaC)** and configuration 
 ## Directory Structure
 - **`clusters/homelab/`**: Defines the "live" state of the production cluster. It uses Kustomize to include and patch applications defined in the `sandbox/` directory.
 - **`sandbox/`**: Contains the base configurations and Helm values for all applications.
+- **`scripts/`**: Automation scripts for cluster verification (`verify-cluster.sh`) and automated rollback (`rollback.sh`).
 - **`ansible/`**: Automated infrastructure bootstrapping and configuration.
     - `homelab.yml`: Main playbook orchestrating all machines.
     - `roles/`: Modular configuration for `common` OS settings, `k3s` nodes, and `kiosk` PC.
@@ -59,6 +60,21 @@ Use the provided **Devcontainer** for a safe testing environment. It includes a 
 Changes are automatically picked up by FluxCD once pushed to the `main` branch.
 - To add a new app: Define it in `sandbox/`, then add a reference in `clusters/homelab/kustomization.yaml`.
 
+### 5. Cluster Verification & Autonomous Rollback
+An autonomous test suite is provided to verify that security changes do not cause operational regressions:
+- Run verification tests:
+  ```bash
+  ./scripts/verify-cluster.sh
+  ```
+- Trigger FluxCD reconciliation and wait for the latest git commit to sync before testing:
+  ```bash
+  ./scripts/verify-cluster.sh --wait-sync
+  ```
+- If post-deployment verification fails, revert immediately:
+  ```bash
+  ./scripts/rollback.sh <commit-to-revert>
+  ```
+
 ---
 
 ## Development Conventions
@@ -94,5 +110,8 @@ Changes are automatically picked up by FluxCD once pushed to the `main` branch.
 - **List Contexts**: `kubectl config get-contexts`
 - **Check Flux Sync Status**: `flux get kustomizations`
 - **Manual Flux Reconcile**: `flux reconcile kustomization flux-system --with-source`
+- **Verify Cluster Health**: `./scripts/verify-cluster.sh`
+- **Reconcile & Verify**: `./scripts/verify-cluster.sh --wait-sync`
+- **Automated Rollback**: `./scripts/rollback.sh <commit-sha>`
 - **View Logs**: `kubectl logs -f -l app=<app-name> -n <namespace>`
 - **Check Trivy Scans**: `kubectl get vulnerabilityreports -A`
