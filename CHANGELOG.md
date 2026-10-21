@@ -2,6 +2,7 @@ I will record changes to this file just so i don't need to look at commit histor
 
 # Changelog
 2026-10-21:
+- Hardened secret creation workflow (`setup/create_secrets.sh`): piped secrets via stdin (`--from-file=values.yaml=/dev/stdin`) to eliminate `ps aux` command-line credential exposure, used positional arguments into Python to prevent shell injection, added strict `.env` file permission enforcement (`chmod 600`), and added validation for required variables and sample placeholders.
 - Fixed Home Assistant deployment strategy to `Recreate` to prevent `RollingUpdate` dual-instance lock contention on `/config/.ha_run.lock` during upgrades.
 - Hardened cluster verification suite (`scripts/verify-cluster.sh`) to detect deployment replica anomalies and enforce strict timeout checking on rollout completions.
 
