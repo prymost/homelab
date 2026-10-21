@@ -1,6 +1,10 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2026-10-21:
+- Fixed Home Assistant deployment strategy to `Recreate` to prevent `RollingUpdate` dual-instance lock contention on `/config/.ha_run.lock` during upgrades.
+- Hardened cluster verification suite (`scripts/verify-cluster.sh`) to detect deployment replica anomalies and enforce strict timeout checking on rollout completions.
+
 2026-10-20:
 - Built autonomous cluster verification suite (`scripts/verify-cluster.sh`) with 21 live health checks and `--wait-sync` FluxCD reconciliation polling.
 - Built autonomous rollback script (`scripts/rollback.sh`) to automatically revert breaking commits and restore green cluster state.

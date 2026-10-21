@@ -146,7 +146,9 @@ wait_for_flux_sync() {
     if [[ "$kustomize_ready" == "True" && "$kustomize_rev" == *"$target_sha"* ]]; then
       log_pass "FluxCD successfully reconciled commit ${short_sha} (${kustomize_rev})"
       # Wait for active workload deployments to finish rolling out
-      kubectl rollout status deployment -n home-assistant home-assistant --timeout=90s >/dev/null 2>&1 || true
+      if ! kubectl rollout status deployment -n home-assistant home-assistant --timeout=120s; then
+        log_fail "Home Assistant deployment rollout failed or timed out!"
+      fi
       sleep 3
       break
     fi
@@ -263,12 +265,15 @@ else:
 check_home_assistant() {
   log_header "4. Home Assistant Application & Ingress"
 
-  local ha_ready
+  local ha_ready ha_replicas ha_updated
   ha_ready="$(kubectl get deployment -n home-assistant home-assistant -o jsonpath='{.status.readyReplicas}' 2>/dev/null || echo "0")"
-  if [[ "$ha_ready" -ge 1 ]]; then
-    log_pass "Home Assistant pod is 1/1 Running and Ready"
+  ha_replicas="$(kubectl get deployment -n home-assistant home-assistant -o jsonpath='{.status.replicas}' 2>/dev/null || echo "0")"
+  ha_updated="$(kubectl get deployment -n home-assistant home-assistant -o jsonpath='{.status.updatedReplicas}' 2>/dev/null || echo "0")"
+
+  if [[ "$ha_ready" -eq 1 && "$ha_replicas" -eq 1 && "$ha_updated" -eq 1 ]]; then
+    log_pass "Home Assistant deployment is 1/1 Running, Updated, and Ready"
   else
-    log_fail "Home Assistant pod is NOT ready (readyReplicas: ${ha_ready})"
+    log_fail "Home Assistant deployment anomaly (ready: ${ha_ready}, total: ${ha_replicas}, updated: ${ha_updated})"
   fi
 
   local ha_pvc
