@@ -1,0 +1,13 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: home-assistant-headers
+  namespace: home-assistant
+spec:
+  headers:
+    customFrameOptionsValue: SAMEORIGIN
+    contentTypeNosniff: true
+    browserXssFilter: true
+    referrerPolicy: strict-origin-when-cross-origin
+    customResponseHeaders:
+      X-Robots-Tag: "noindex, nofollow, nosnippet"

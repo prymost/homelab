@@ -6,6 +6,7 @@ resources:
   - ../../../sandbox/home-assistant/pvc.yaml
   - ../../../sandbox/home-assistant/service.yaml
   - ../../../sandbox/home-assistant/deployment.yaml
+  - ../../../sandbox/home-assistant/middleware-headers.yaml
   - ../../../sandbox/home-assistant/ingress.yaml
   - ../../../sandbox/home-assistant/network-policies/
   - ../../../sandbox/home-assistant/configmap.yaml

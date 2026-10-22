@@ -7,5 +7,6 @@ resources:
   - service.yaml
   - configmap.yaml
   - deployment.yaml
+  - middleware-headers.yaml
   - ingress.yaml
   - network-policies/

@@ -2,6 +2,9 @@ I will record changes to this file just so i don't need to look at commit histor
 
 # Changelog
 2026-10-22:
+- Hardened Traefik Ingress for Home Assistant:
+  - Created Traefik `Middleware` (`home-assistant-headers`) injecting defense-in-depth security headers: `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff`, `X-XSS-Protection: 1; mode=block`, `Referrer-Policy: strict-origin-when-cross-origin`, and `X-Robots-Tag: noindex, nofollow, nosnippet`.
+  - Attached middleware to `home-assistant-ingress` while preserving internal `.lan` HTTP access without forced HTTPS redirects, preventing Kiosk dashboard disruption and browser untrusted certificate blocks.
 - Hardened Ansible automation playbooks:
   - Added SSH configuration syntax validation (`validate: '/usr/sbin/sshd -t -f %s'`) and explicit `PermitRootLogin prohibit-password` in common role.
   - Pinned K3s installation version (`INSTALL_K3S_VERSION: "v1.33.5+k3s1"`) in inventory `group_vars/all.yml` and role defaults to prevent unexpected upstream drift and supply-chain tampering.
