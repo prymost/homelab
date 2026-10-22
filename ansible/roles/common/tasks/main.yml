@@ -7,14 +7,16 @@
     state: present
     update_cache: yes
 
-- name: Configure SSH Port and Disable Passwords
+- name: Configure SSH Port, Disable Passwords, and Restrict Root Login
   lineinfile:
     path: /etc/ssh/sshd_config
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
+    validate: '/usr/sbin/sshd -t -f %s'
   loop:
     - { regexp: '^#?Port', line: "Port {{ ansible_port }}" }
     - { regexp: '^#?PasswordAuthentication', line: 'PasswordAuthentication no' }
+    - { regexp: '^#?PermitRootLogin', line: 'PermitRootLogin prohibit-password' }
   notify: Restart SSH
 
 - name: Configure periodic auto-upgrades

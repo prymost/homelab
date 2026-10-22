@@ -6,7 +6,7 @@
 
 - name: Install k3s agent
   shell: |
-    curl -sfL https://get.k3s.io | K3S_URL="https://{{ hostvars[groups['k3s_master'][0]]['ansible_host'] }}:6443" K3S_TOKEN="{{ k3s_token }}" sh -s - agent --node-ip {{ ansible_host }}
+    curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="{{ k3s_version }}" K3S_URL="https://{{ hostvars[groups['k3s_master'][0]]['ansible_host'] }}:6443" K3S_TOKEN="{{ k3s_token }}" sh -s - agent --node-ip {{ ansible_host }}
   no_log: true
   when: 
     - not k3s_bin.stat.exists

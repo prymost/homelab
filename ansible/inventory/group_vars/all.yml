@@ -1,0 +1,5 @@
+---
+# Global group variables for homelab Ansible playbooks
+
+# SEC-HIGH-03: Pin K3s release version across cluster nodes to avoid supply-chain & drift risks
+k3s_version: "v1.33.5+k3s1"

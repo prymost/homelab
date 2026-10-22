@@ -1,6 +1,13 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2026-10-22:
+- Hardened Ansible automation playbooks:
+  - Added SSH configuration syntax validation (`validate: '/usr/sbin/sshd -t -f %s'`) and explicit `PermitRootLogin prohibit-password` in common role.
+  - Pinned K3s installation version (`INSTALL_K3S_VERSION: "v1.33.5+k3s1"`) in inventory `group_vars/all.yml` and role defaults to prevent unexpected upstream drift and supply-chain tampering.
+  - Removed persistent fact caching (`cacheable: yes`) for cluster node tokens in K3s master role to prevent plaintext storage on disk.
+  - Dynamically resolved control machine user home directory (`lookup('env', 'HOME')`) for localized kubeconfig storage and ensured secure permissions (`0700` directory, `0600` file).
+
 2026-10-21:
 - Hardened secret creation workflow (`setup/create_secrets.sh`): piped secrets via stdin (`--from-file=values.yaml=/dev/stdin`) to eliminate `ps aux` command-line credential exposure, used positional arguments into Python to prevent shell injection, added strict `.env` file permission enforcement (`chmod 600`), and added validation for required variables and sample placeholders.
 - Fixed Home Assistant deployment strategy to `Recreate` to prevent `RollingUpdate` dual-instance lock contention on `/config/.ha_run.lock` during upgrades.

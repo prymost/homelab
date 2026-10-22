@@ -1,0 +1,3 @@
+---
+# SEC-HIGH-03: Default pinned K3s installer version
+k3s_version: "v1.33.5+k3s1"
