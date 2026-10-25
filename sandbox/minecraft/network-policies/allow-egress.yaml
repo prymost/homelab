@@ -28,10 +28,10 @@ spec:
         - ipBlock:
             cidr: 0.0.0.0/0
             except:
-              # Default k3s pod CIDR
-              - 10.42.0.0/16
-              # Default k3s service CIDR
-              - 10.43.0.0/16
+              - 10.0.0.0/8       # RFC1918 Class A (includes k3s pod 10.42/16 & svc 10.43/16)
+              - 172.16.0.0/12    # RFC1918 Class B
+              - 192.168.0.0/16   # RFC1918 Class C (covers all homelab LAN subnets)
+              - 169.254.0.0/16   # RFC3927 Link-Local / Cloud Metadata
       ports:
         - protocol: TCP
           port: 443

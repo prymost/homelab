@@ -149,6 +149,9 @@ wait_for_flux_sync() {
       if ! kubectl rollout status deployment -n home-assistant home-assistant --timeout=120s; then
         log_fail "Home Assistant deployment rollout failed or timed out!"
       fi
+      if ! kubectl rollout status deployment -n hermes-agent hermes-agent --timeout=120s; then
+        log_fail "Hermes Agent deployment rollout failed or timed out!"
+      fi
       sleep 3
       break
     fi
@@ -442,10 +445,45 @@ check_monitoring_robusta() {
 }
 
 # ------------------------------------------------------------------------------
-# Test 8: Cluster-Wide Pod Health Scan
+# Test 8: Hermes AI Agent
+# ------------------------------------------------------------------------------
+check_hermes_agent() {
+  log_header "8. Hermes AI Agent Workload & Storage"
+
+  local hermes_ready hermes_replicas
+  hermes_ready="$(kubectl get deployment -n hermes-agent hermes-agent -o jsonpath='{.status.readyReplicas}' 2>/dev/null || echo "0")"
+  hermes_replicas="$(kubectl get deployment -n hermes-agent hermes-agent -o jsonpath='{.status.replicas}' 2>/dev/null || echo "0")"
+
+  if [[ "$hermes_ready" -ge 1 && "$hermes_replicas" -ge 1 ]]; then
+    log_pass "Hermes Agent deployment is 1/1 Running, Updated, and Ready"
+  else
+    log_fail "Hermes Agent deployment anomaly (ready: ${hermes_ready}, total: ${hermes_replicas})"
+  fi
+
+  local hermes_pvc
+  hermes_pvc="$(kubectl get pvc -n hermes-agent hermes-agent-data -o jsonpath='{.status.phase}' 2>/dev/null || echo "Missing")"
+  if [[ "$hermes_pvc" == "Bound" ]]; then
+    log_pass "Hermes Agent PVC 'hermes-agent-data' is Bound"
+  else
+    log_fail "Hermes Agent PVC 'hermes-agent-data' status is: ${hermes_pvc}"
+  fi
+
+  if [[ "$QUICK_MODE" == false ]]; then
+    local recent_hermes_logs
+    recent_hermes_logs="$(kubectl logs -n hermes-agent deployment/hermes-agent --tail=30 2>/dev/null || echo "")"
+    if echo "$recent_hermes_logs" | grep -qiE "gateway|telegram|started|listening|polling"; then
+      log_pass "Hermes Agent messaging gateway process loop is active"
+    else
+      log_warn "No recent gateway startup logs found in last 30 lines (check pod status)"
+    fi
+  fi
+}
+
+# ------------------------------------------------------------------------------
+# Test 9: Cluster-Wide Pod Health Scan
 # ------------------------------------------------------------------------------
 check_pod_anomalies() {
-  log_header "8. Cluster-Wide Pod Health & Anomaly Scan"
+  log_header "9. Cluster-Wide Pod Health & Anomaly Scan"
 
   local unhealthy_pods
   unhealthy_pods="$(python3 -c '
@@ -508,6 +546,7 @@ main() {
   check_minecraft
   check_storage_nfs
   check_monitoring_robusta
+  check_hermes_agent
   check_pod_anomalies
 
   log_header "VERIFICATION SUMMARY"

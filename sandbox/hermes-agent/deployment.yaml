@@ -31,9 +31,11 @@ spec:
         fsGroup: 10000
         seccompProfile:
           type: RuntimeDefault
+        appArmorProfile:
+          type: RuntimeDefault
       initContainers:
         - name: init-volume-permissions
-          image: alpine:3.21.3
+          image: alpine:3.21.3@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c
           command: ["/bin/sh", "-c"]
           args:
             - |
@@ -49,6 +51,7 @@ spec:
             runAsNonRoot: false
             runAsUser: 0
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
             capabilities:
               drop:
                 - ALL
@@ -56,6 +59,8 @@ spec:
                 - CHOWN
                 - FOWNER
             seccompProfile:
+              type: RuntimeDefault
+            appArmorProfile:
               type: RuntimeDefault
           volumeMounts:
             - name: hermes-data
@@ -122,6 +127,8 @@ spec:
                 - ALL
             seccompProfile:
               type: RuntimeDefault
+            appArmorProfile:
+              type: RuntimeDefault
           volumeMounts:
             - name: hermes-data
               mountPath: /opt/data
@@ -140,6 +147,10 @@ spec:
           configMap:
             name: hermes-agent-config
         - name: tmp
-          emptyDir: {}
+          emptyDir:
+            medium: Memory
+            sizeLimit: 64Mi
         - name: run
-          emptyDir: {}
+          emptyDir:
+            medium: Memory
+            sizeLimit: 16Mi

@@ -15,11 +15,13 @@ spec:
         - ipBlock:
             cidr: 0.0.0.0/0
             except:
-              - 10.42.0.0/16     # In-cluster Pod CIDR
-              - 10.43.0.0/16     # In-cluster Service CIDR
-              - 192.168.50.0/24  # Homelab LAN subnet
-              - 10.0.0.0/8       # RFC1918 Private Class A
-              - 172.16.0.0/12    # RFC1918 Private Class B
+              - 10.0.0.0/8       # RFC1918 Class A (includes k3s pod 10.42/16 & svc 10.43/16)
+              - 172.16.0.0/12    # RFC1918 Class B
+              - 192.168.0.0/16   # RFC1918 Class C (covers all homelab LAN subnets, router, modem)
+              - 100.64.0.0/10    # RFC6598 Carrier-Grade NAT / Tailscale overlay
+              - 169.254.0.0/16   # RFC3927 Link-Local / Cloud Metadata
+              - 127.0.0.0/8      # RFC1122 Loopback
+              - 224.0.0.0/4      # Multicast
       ports:
         - protocol: TCP
           port: 443

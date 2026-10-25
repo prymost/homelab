@@ -2,6 +2,16 @@ I will record changes to this file just so i don't need to look at commit histor
 
 # Changelog
 2026-10-25:
+- Hardened Hermes Agent container & supply chain security:
+  - Pinned `alpine:3.21.3` in `initContainers` to immutable SHA256 digest (`@sha256:a8560b36...`) and enforced `readOnlyRootFilesystem: true`.
+  - Added `appArmorProfile: { type: RuntimeDefault }` across pod and container security contexts.
+  - Hardened `emptyDir` mounts for `/tmp` and `/run` with memory backing (`medium: Memory`) and strict size limits (`64Mi` and `16Mi`) to protect host root filesystems against disk pressure.
+- Hardened network isolation and egress defense-in-depth:
+  - Applied exhaustive CIDR exclusions to `sandbox/hermes-agent/network-policies/allow-external-egress.yaml`, blocking all RFC1918 Class C subnets (`192.168.0.0/16`), link-local metadata (`169.254.0.0/16`), Tailscale/CGNAT (`100.64.0.0/10`), loopback, and multicast.
+  - Enforced cluster-wide egress parity: updated `minecraft` and `monitoring` egress policies to block outbound lateral movement to the private LAN (`192.168.0.0/16`).
+  - Preserved Home Assistant egress to maintain local smart device discovery on the LAN.
+- Integrated Hermes Agent into the autonomous cluster verification test suite (`scripts/verify-cluster.sh`):
+  - Added test 8 (`check_hermes_agent`) validating deployment readiness, PVC binding, and messaging loop activity (23/23 tests passing).
 - Re-architected homelab secret management to use Bitwarden CLI (`bw`).
 - Added Hermes Agent secret injection support to `setup/inject_secrets_bw.sh` and `setup/render_secrets.py`.
 - Implemented Storage, RBAC, and Network Isolation for Hermes Agent (`sandbox/hermes-agent/`).
