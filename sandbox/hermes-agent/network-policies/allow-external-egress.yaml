@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-external-egress
+  namespace: hermes-agent
+  labels:
+    app.kubernetes.io/name: hermes-agent
+    app.kubernetes.io/part-of: hermes-agent
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 10.42.0.0/16     # In-cluster Pod CIDR
+              - 10.43.0.0/16     # In-cluster Service CIDR
+              - 192.168.50.0/24  # Homelab LAN subnet
+              - 10.0.0.0/8       # RFC1918 Private Class A
+              - 172.16.0.0/12    # RFC1918 Private Class B
+      ports:
+        - protocol: TCP
+          port: 443

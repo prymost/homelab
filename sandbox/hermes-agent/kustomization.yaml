@@ -3,4 +3,6 @@ kind: Kustomization
 namespace: hermes-agent
 resources:
   - namespace.yaml
+  - pvc.yaml
+  - rbac.yaml
   - network-policies/

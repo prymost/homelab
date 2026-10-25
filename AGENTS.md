@@ -83,7 +83,7 @@ An autonomous test suite is provided to verify that security changes do not caus
     - `seccompProfile: { type: "RuntimeDefault" }`
   - **Token Protection**: Explicitly set `automountServiceAccountToken: false` on pods and service accounts unless the workload genuinely communicates with the Kubernetes API.
   - **Image Pinning**: Always pin container images to specific semantic version tags or immutable digests. Never use `:latest` or untagged images.
-  - **Network Isolation**: Every application in `sandbox/` must include a `network-policies/` directory with `default-deny.yaml` (blocking all ingress and egress) and explicit, least-privilege allow rules. Do not allow egress to the Kubernetes API server (`10.43.0.1:443`) unless the application is a cluster controller.
+  - **Network Isolation**: Every application in `sandbox/` must include a `network-policies/` directory with `default-deny.yaml` (blocking all ingress and egress) and explicit, least-privilege allow rules. Do not allow egress to the Kubernetes API server (`10.43.0.1:443`) unless the application is a cluster controller or an authorized cluster health observer (e.g., Robusta, Hermes Agent).
   - **Secret Hygiene**: Never commit secrets or `.env` files to Git; avoid passing sensitive values as command-line arguments (visible in `ps aux`).
 - **Operational Continuity & Non-Breaking Verification**:
   - Security hardening must never compromise legitimate homelab functionality.

@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-k8s-api-egress
+  namespace: hermes-agent
+  labels:
+    app.kubernetes.io/name: hermes-agent
+    app.kubernetes.io/part-of: hermes-agent
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    # In-cluster API Service ClusterIP
+    - to:
+        - ipBlock:
+            cidr: 10.43.0.1/32
+      ports:
+        - protocol: TCP
+          port: 443
+    # Control plane master node direct endpoints (post-DNAT fallback)
+    - to:
+        - ipBlock:
+            cidr: 192.168.50.119/32
+        - ipBlock:
+            cidr: 192.168.50.120/32
+      ports:
+        - protocol: TCP
+          port: 6443

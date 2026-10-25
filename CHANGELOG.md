@@ -5,7 +5,9 @@ I will record changes to this file just so i don't need to look at commit histor
 - Re-architected homelab secret management to use Bitwarden CLI (`bw`):
   - Created `setup/inject_secrets_bw.sh`: securely unlocks Bitwarden on-demand, retrieves credentials in-memory via a single atomic call, and pipes Kubernetes Secret manifests via stdin (`kubectl apply -f -`) with zero disk writes, zero `ps aux` command-line exposure, and automatic session/payload memory scrubbing.
   - Implemented anti-reconnaissance protections: eliminated hardcoded vault item titles in public git files in favor of dynamic environment variable / interactive prompting.
-- Added Hermes Agent secret injection support to `setup/inject_secrets_bw.sh`.
+- Added Hermes Agent secret injection support to `setup/inject_secrets_bw.sh` and `setup/render_secrets.py`.
+- Implemented Storage, RBAC, and Network Isolation for Hermes Agent (`sandbox/hermes-agent/`).
+- Hardened `monitoring` NetworkPolicies.
 
 2026-10-22:
 - Hardened Traefik Ingress for Home Assistant:

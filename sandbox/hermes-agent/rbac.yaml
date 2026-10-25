@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hermes-agent
+  namespace: hermes-agent
+  labels:
+    app.kubernetes.io/name: hermes-agent
+    app.kubernetes.io/part-of: hermes-agent
+# Defense-in-depth: disable token automount on SA; pod spec explicitly opts in
+automountServiceAccountToken: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: hermes-agent-cluster-health-reader
+  labels:
+    app.kubernetes.io/name: hermes-agent
+    app.kubernetes.io/part-of: hermes-agent
+rules:
+  # Cluster node status and resource conditions
+  - apiGroups: [""]
+    resources: ["nodes", "nodes/status"]
+    verbs: ["get", "list", "watch"]
+  # Workload status and health across namespaces (strictly no secrets, no configmaps, no pod exec)
+  - apiGroups: [""]
+    resources: ["namespaces", "pods", "pods/status"]
+    verbs: ["get", "list", "watch"]
+  # Warning and diagnostic events for pod/node failure analysis
+  - apiGroups: ["", "events.k8s.io"]
+    resources: ["events"]
+    verbs: ["get", "list", "watch"]
+  # Workload replica status and rollout tracking
+  - apiGroups: ["apps"]
+    resources: ["deployments", "daemonsets", "statefulsets", "replicasets"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: hermes-agent-cluster-health-reader-binding
+  labels:
+    app.kubernetes.io/name: hermes-agent
+    app.kubernetes.io/part-of: hermes-agent
+subjects:
+  - kind: ServiceAccount
+    name: hermes-agent
+    namespace: hermes-agent
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: hermes-agent-cluster-health-reader
