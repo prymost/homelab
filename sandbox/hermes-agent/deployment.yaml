@@ -91,6 +91,11 @@ spec:
                 secretKeyRef:
                   name: hermes-agent-secrets
                   key: TELEGRAM_ALLOWED_USERS
+            - name: TELEGRAM_HOME_CHANNEL
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-agent-secrets
+                  key: TELEGRAM_ALLOWED_USERS
             - name: OPENAI_API_KEY
               valueFrom:
                 secretKeyRef:

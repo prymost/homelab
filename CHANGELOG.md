@@ -10,7 +10,8 @@ I will record changes to this file just so i don't need to look at commit histor
 - Deployed Hermes Agent base GitOps workload (`sandbox/hermes-agent/` and `clusters/homelab/hermes-agent/`):
   - Created hardened base `Deployment` with non-root UID 10000, `readOnlyRootFilesystem: true`, capabilities dropped to `ALL`, `RuntimeDefault` seccomp, explicit CPU/memory limits, and pinned semantic digest `nousresearch/hermes-agent:stable@sha256:9c5561579f3ffdf333401797094ac3a743738d6c25d40f4331c7bf77b694238d`.
   - Added permissions initContainer (`alpine:3.21.3`) ensuring non-root NFS mount ownership (`10000:10000`, `0770`) without relying on NAS defaults.
-  - Configured ConfigMap with `database.journal_mode: delete` for safe SQLite concurrency over NFS, custom OpenAI backend routing to OpenCode Go API (`https://opencode.ai/zen/go/v1`), and sandboxed toolsets (`platform_toolsets.telegram: [web, file, skills, todo]`).
+  - Configured ConfigMap with `database.journal_mode: delete` for safe SQLite concurrency over NFS, custom OpenAI backend routing to OpenCode Go API (`https://opencode.ai/zen/go/v1`), static Telegram `home_channel` declaration, and sandboxed toolsets (`platform_toolsets.telegram: [web, file, skills, todo]`).
+  - Added `TELEGRAM_HOME_CHANNEL` environment variable mapping to resolve persistent home channel dispatch without runtime `/opt/data/config.yaml` read-only mount mutation errors.
   - Implemented least-privilege secret mapping (`valueFrom.secretKeyRef`) from `hermes-agent-secrets`.
   - Integrated Hermes Agent overlay into root GitOps catalog (`clusters/homelab/kustomization.yaml`).
 - Hardened `monitoring` NetworkPolicies.

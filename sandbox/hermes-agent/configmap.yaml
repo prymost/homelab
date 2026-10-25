@@ -30,6 +30,10 @@ data:
       platforms:
         telegram:
           enabled: true
+          home_channel:
+            platform: "telegram"
+            chat_id: "97322988"
+            name: "Boris"
 
     agent:
       max_turns: 50
