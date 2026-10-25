@@ -1,6 +1,11 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2026-10-25:
+- Re-architected homelab secret management to use Bitwarden CLI (`bw`):
+  - Created `setup/inject_secrets_bw.sh`: securely unlocks Bitwarden on-demand, retrieves credentials in-memory via a single atomic call, and pipes Kubernetes Secret manifests via stdin (`kubectl apply -f -`) with zero disk writes, zero `ps aux` command-line exposure, and automatic session/payload memory scrubbing.
+  - Implemented anti-reconnaissance protections: eliminated hardcoded vault item titles in public git files in favor of dynamic environment variable / interactive prompting.
+
 2026-10-22:
 - Hardened Traefik Ingress for Home Assistant:
   - Created Traefik `Middleware` (`home-assistant-headers`) injecting defense-in-depth security headers: `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff`, `X-XSS-Protection: 1; mode=block`, `Referrer-Policy: strict-origin-when-cross-origin`, and `X-Robots-Tag: noindex, nofollow, nosnippet`.

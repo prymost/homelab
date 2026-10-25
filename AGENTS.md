@@ -42,14 +42,10 @@ To prepare a new node or apply configuration changes across the homelab:
 *Note: This process is declarative. Running it multiple times is safe and only applies necessary changes.*
 
 ### 2. Secret Management
-**NEVER commit secrets to Git.** This project uses a manual injection strategy:
-1. Copy `.env.sample` to `.env`.
-2. Fill in the required variables (e.g., `EMAIL_PASS`).
-3. Run the injection script:
-   ```bash
-   ./setup/create_secrets.sh
-   ```
-This creates the necessary Kubernetes secrets (e.g., `robusta-secret-values`) in the appropriate namespaces.
+**NEVER commit secrets to Git or store plaintext credentials on disk.**
+- Secrets are managed via Bitwarden CLI (`bw`) and injected via `./setup/inject_secrets_bw.sh`.
+- **Agent Pre-Flight Check**: Always check `bw status` before attempting secret operations.
+- See [docs/secret-management.md](docs/secret-management.md) for complete instructions on injection, rotation, and adding new secrets.
 
 ### 3. Development and Testing
 Use the provided **Devcontainer** for a safe testing environment. It includes a local K3s cluster.
@@ -108,6 +104,7 @@ An autonomous test suite is provided to verify that security changes do not caus
   - `kubectl config use-context homelab` (Production)
   - `kubectl config use-context k3d-my-dev-cluster` (Local Dev)
 - **List Contexts**: `kubectl config get-contexts`
+- **Check Bitwarden Status**: `bw status` (check if vault is `"unauthenticated"`, `"locked"`, or `"unlocked"`)
 - **Check Flux Sync Status**: `flux get kustomizations`
 - **Manual Flux Reconcile**: `flux reconcile kustomization flux-system --with-source`
 - **Verify Cluster Health**: `./scripts/verify-cluster.sh`
