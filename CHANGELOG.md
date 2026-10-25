@@ -5,9 +5,7 @@ I will record changes to this file just so i don't need to look at commit histor
 - Re-architected homelab secret management to use Bitwarden CLI (`bw`).
 - Added Hermes Agent secret injection support to `setup/inject_secrets_bw.sh` and `setup/render_secrets.py`.
 - Implemented Storage, RBAC, and Network Isolation for Hermes Agent (`sandbox/hermes-agent/`).
-- Deployed Hermes Agent base GitOps workload (`sandbox/hermes-agent/` and `clusters/homelab/hermes-agent/`):
-  - Configured ConfigMap with native `opencode-go` provider routing using `glm-5.3-flash` and declarative `home_channel`.
-  - Added `OPENCODE_GO_API_KEY` mapping from `hermes-agent-secrets` so Hermes passes the real API key to OpenCode Go.
+- Deployed Hermes Agent base GitOps workload (`sandbox/hermes-agent/` and `clusters/homelab/hermes-agent/`).
 
 2026-10-22:
 - Hardened Traefik Ingress for Home Assistant:
