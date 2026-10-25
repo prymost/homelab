@@ -16,7 +16,7 @@ data:
 
     model:
       default: "glm-5.3-flash"
-      provider: "custom"
+      provider: "opencode-go"
       base_url: "https://opencode.ai/zen/go/v1"
 
     platform_toolsets:
