@@ -1,0 +1,146 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hermes-agent
+  namespace: hermes-agent
+  labels:
+    app: hermes-agent
+    app.kubernetes.io/name: hermes-agent
+    app.kubernetes.io/part-of: hermes-agent
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: hermes-agent
+      app.kubernetes.io/name: hermes-agent
+  template:
+    metadata:
+      labels:
+        app: hermes-agent
+        app.kubernetes.io/name: hermes-agent
+        app.kubernetes.io/part-of: hermes-agent
+    spec:
+      serviceAccountName: hermes-agent
+      automountServiceAccountToken: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10000
+        runAsGroup: 10000
+        fsGroup: 10000
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        - name: init-volume-permissions
+          image: alpine:3.21.3
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              chown -R 10000:10000 /opt/data && chmod 770 /opt/data
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          securityContext:
+            runAsNonRoot: false
+            runAsUser: 0
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+              add:
+                - CHOWN
+                - FOWNER
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - name: hermes-data
+              mountPath: /opt/data
+      containers:
+        - name: hermes-agent
+          image: nousresearch/hermes-agent:stable@sha256:9c5561579f3ffdf333401797094ac3a743738d6c25d40f4331c7bf77b694238d
+          command:
+            - "/opt/hermes/bin/hermes"
+          args:
+            - "gateway"
+            - "run"
+            - "--no-supervise"
+          env:
+            - name: PYTHONUNBUFFERED
+              value: "1"
+            - name: PYTHONDONTWRITEBYTECODE
+              value: "1"
+            - name: HERMES_HOME
+              value: "/opt/data"
+            - name: HERMES_ACCEPT_HOOKS
+              value: "1"
+            - name: HOME
+              value: "/opt/data"
+            # Explicit least-privilege secret injection from hermes-agent-secrets
+            - name: TELEGRAM_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-agent-secrets
+                  key: TELEGRAM_BOT_TOKEN
+            - name: TELEGRAM_ALLOWED_USERS
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-agent-secrets
+                  key: TELEGRAM_ALLOWED_USERS
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-agent-secrets
+                  key: OPENAI_API_KEY
+            - name: OPENAI_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-agent-secrets
+                  key: OPENAI_BASE_URL
+                  optional: true
+            - name: TAVILY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-agent-secrets
+                  key: TAVILY_API_KEY
+                  optional: true
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - name: hermes-data
+              mountPath: /opt/data
+            - name: hermes-config
+              mountPath: /opt/data/config.yaml
+              subPath: config.yaml
+            - name: tmp
+              mountPath: /tmp
+            - name: run
+              mountPath: /run
+      volumes:
+        - name: hermes-data
+          persistentVolumeClaim:
+            claimName: hermes-agent-data
+        - name: hermes-config
+          configMap:
+            name: hermes-agent-config
+        - name: tmp
+          emptyDir: {}
+        - name: run
+          emptyDir: {}

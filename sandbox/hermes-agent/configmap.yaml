@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hermes-agent-config
+  namespace: hermes-agent
+  labels:
+    app: hermes-agent
+    app.kubernetes.io/name: hermes-agent
+    app.kubernetes.io/part-of: hermes-agent
+data:
+  config.yaml: |
+    _config_version: 51
+
+    database:
+      journal_mode: "delete"
+
+    model:
+      default: "deepseek-v4-pro"
+      provider: "custom"
+      base_url: "https://opencode.ai/zen/go/v1"
+
+    platform_toolsets:
+      telegram:
+        - web
+        - file
+        - skills
+        - todo
+
+    gateway:
+      platforms:
+        telegram:
+          enabled: true
+
+    agent:
+      max_turns: 50
