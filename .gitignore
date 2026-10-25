@@ -7,3 +7,7 @@ conductor/
 ansible/inventory/hosts.yml
 ansible/**/vault.yml
 *.retry
+
+# Python
+__pycache__/
+*.pyc

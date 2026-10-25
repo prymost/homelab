@@ -47,30 +47,27 @@ Add a custom field to the homelab Secure Note:
 - **Name**: e.g., `SERVICE_API_KEY`
 - **Type**: `Hidden` (passwords/tokens) or `Text`
 
-### 2. Extend Injection Script
-In [`setup/inject_secrets_bw.sh`](../setup/inject_secrets_bw.sh), extract the field and pipe to `kubectl`:
+### 2. Extend Secret Renderer
+In [`setup/render_secrets.py`](../setup/render_secrets.py), map the field into the target secret manifest:
 ```python
-new_key = fields.get("SERVICE_API_KEY")
-```
-Stream via stdin to create the Kubernetes Secret:
-```bash
-printf '%s' "$NEW_KEY" | kubectl create secret generic app-secret \
-  --namespace=app-ns \
-  --from-file=api-key=/dev/stdin \
-  --dry-run=client -o yaml | kubectl apply -f -
+def render_myservice(fields: Dict[str, str]) -> List[Dict[str, Any]]:
+    api_key = fields.get("SERVICE_API_KEY")
+    if not api_key:
+        return []
+    return [build_secret("myservice-secrets", "myservice", {"API_KEY": api_key})]
 ```
 
 ### 3. Reference in Workload Manifest
 In `sandbox/<app>/deployment.yaml`:
 ```yaml
 env:
-  - name: API_KEY
+  - name: SERVICE_API_KEY
     valueFrom:
       secretKeyRef:
-        name: app-secret
-        key: api-key
+        name: myservice-secrets
+        key: API_KEY
 ```
 
 ### 4. Apply & Commit
 1. Inject the secret: `./setup/inject_secrets_bw.sh`
-2. Commit the manifest and updated `setup/inject_secrets_bw.sh` to Git (no secret values are in the commit).
+2. Commit the manifest and updated `setup/render_secrets.py` to Git (no secret values are in the commit).
