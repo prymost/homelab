@@ -156,7 +156,7 @@ spec:
               subPath: config.yaml
             - name: hermes-config
               mountPath: /usr/local/bin/mint-github-token
-              subPath: mint-github-token
+              subPath: mint-github-auth
             - name: hermes-secrets
               mountPath: /etc/hermes-secrets
               readOnly: true
