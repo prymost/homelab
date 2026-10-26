@@ -19,6 +19,7 @@ The repository is organized as follows:
 2.  **Check the `clusters/homelab` directory:** Browse the `clusters/homelab` directory to see the various services and applications that are deployed.
     - flux-system/: FluxCD's own manifests for managing the cluster.
     - kube-system/: Core Kubernetes system configurations, including Traefik.
+    - hermes-agent/: Autonomous AI agent integration connected to Telegram gateway.
     - home-assistant/: Smart home automation platform and dashboard.
     - minecraft/: Configuration for the Minecraft server.
     - monitoring/: Robusta monitoring stack for automated Kubernetes alert dispatch and event enrichment.
@@ -82,7 +83,7 @@ curl -I -H "Host: <dedicated-hostname>" http://localhost:8080
 To verify the end-to-end health of all cluster workloads, storage mounts, network policies, and FluxCD GitOps synchronization:
 
 ```bash
-# Run 21 automated cluster health checks
+# Run 23 automated cluster health checks
 ./scripts/verify-cluster.sh
 
 # Trigger Flux sync and wait for latest commit to reconcile before checking

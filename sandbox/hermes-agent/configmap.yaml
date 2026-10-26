@@ -25,15 +25,167 @@ data:
         - file
         - skills
         - todo
+        - terminal
 
     gateway:
       platforms:
         telegram:
           enabled: true
-          home_channel:
-            platform: "telegram"
-            chat_id: "97322988"
-            name: "Boris"
 
     agent:
       max_turns: 50
+
+  mint-github-token: |
+    #!/opt/hermes/.venv/bin/python3
+    """
+    GitHub App Authentication & Git Credential Helper for Hermes Agent.
+    Mints short-lived installation access tokens using RS256 JWT signing.
+    Enforces strict HTTPS and github.com host validation to prevent token exfiltration.
+    """
+
+    import json
+    import os
+    import subprocess
+    import sys
+    import time
+    from typing import Dict, Tuple
+    import urllib.error
+    import urllib.request
+    import jwt
+
+
+    def get_credentials() -> Tuple[str, str, str]:
+        app_id = os.environ.get("GITHUB_APP_ID")
+        installation_id = os.environ.get("GITHUB_INSTALLATION_ID")
+
+        key_path = "/etc/hermes-secrets/github-app-private-key.pem"
+        private_key = None
+        if os.path.exists(key_path):
+            with open(key_path, "r", encoding="utf-8") as f:
+                private_key = f.read().strip()
+        elif os.environ.get("GITHUB_APP_PRIVATE_KEY"):
+            private_key = os.environ["GITHUB_APP_PRIVATE_KEY"].strip()
+
+        if not app_id or not installation_id or not private_key:
+            sys.stderr.write("Error: GITHUB_APP_ID, GITHUB_INSTALLATION_ID, or GitHub App Private Key is not set.\n")
+            sys.exit(1)
+
+        return app_id.strip(), installation_id.strip(), private_key
+
+
+    def mint_installation_token() -> str:
+        app_id, installation_id, private_key = get_credentials()
+
+        now = int(time.time())
+        iat = now - 60
+        payload = {
+            "iat": iat,
+            "exp": iat + (10 * 60),  # Strictly 10 minutes from iat
+            "iss": str(app_id),
+        }
+
+        encoded_jwt = jwt.encode(payload, private_key, algorithm="RS256")
+        if isinstance(encoded_jwt, bytes):
+            encoded_jwt = encoded_jwt.decode("utf-8")
+        url = f"https://api.github.com/app/installations/{installation_id}/access_tokens"
+        token_request_body = json.dumps({
+            "repositories": ["homelab"],
+            "permissions": {
+                "contents": "write",
+                "pull_requests": "write",
+                "metadata": "read",
+            },
+        }).encode("utf-8")
+
+        req = urllib.request.Request(
+            url,
+            data=token_request_body,
+            headers={
+                "Authorization": f"Bearer {encoded_jwt}",
+                "Accept": "application/vnd.github+json",
+                "User-Agent": "hermes-agent",
+                "Content-Type": "application/json",
+            },
+            method="POST",
+        )
+
+        try:
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                data = json.loads(resp.read().decode())
+                return data["token"]
+        except urllib.error.HTTPError as e:
+            sys.stderr.write(f"GitHub API HTTP error {e.code}: {e.read().decode()}\n")
+            sys.exit(1)
+        except Exception as e:
+            sys.stderr.write(f"Error contacting GitHub API: {e}\n")
+            sys.exit(1)
+
+
+    def handle_git_credential_get() -> None:
+        """Processes Git credential helper 'get' request according to Git Credential Protocol."""
+        req: Dict[str, str] = {}
+        for line in sys.stdin:
+            line = line.strip()
+            if not line:
+                break
+            if "=" in line:
+                k, v = line.split("=", 1)
+                req[k.strip()] = v.strip()
+
+        host = req.get("host", "").lower()
+        protocol = req.get("protocol", "").lower()
+
+        # Anti-exfiltration check: strictly scope to https://github.com
+        if host != "github.com" or protocol != "https":
+            return
+
+        try:
+            token = mint_installation_token()
+        except (Exception, SystemExit):
+            return
+
+        sys.stdout.write("username=x-access-token\n")
+        sys.stdout.write(f"password={token}\n")
+
+
+    def setup_git_config() -> None:
+        try:
+            app_id, _, _ = get_credentials()
+        except SystemExit:
+            sys.stderr.write("GitHub App credentials not configured; skipping git config setup.\n")
+            return
+
+        bot_name = "hermes-agent[bot]"
+        bot_email = f"{app_id}+{bot_name}@users.noreply.github.com"
+        subprocess.run(["git", "config", "--global", "user.name", bot_name], check=True)
+        subprocess.run(["git", "config", "--global", "user.email", bot_email], check=True)
+        # Clear existing helpers for github.com before registering to remain idempotent
+        subprocess.run(["git", "config", "--global", "--unset-all", "credential.https://github.com.helper"], check=False)
+        subprocess.run(["git", "config", "--global", "--add", "credential.https://github.com.helper", "cache --timeout=3300"], check=True)
+        subprocess.run(["git", "config", "--global", "--add", "credential.https://github.com.helper", "/usr/local/bin/mint-github-token"], check=True)
+        sys.stderr.write(f"Configured git identity ({bot_name} <{bot_email}>) and scoped credential helper.\n")
+
+
+    def main() -> None:
+        if len(sys.argv) > 1 and sys.argv[1] == "setup":
+            setup_git_config()
+            return
+
+        if len(sys.argv) > 1 and sys.argv[1] == "get":
+            handle_git_credential_get()
+            return
+
+        if len(sys.argv) > 1 and sys.argv[1] in ("store", "erase"):
+            return
+
+        if len(sys.argv) > 1 and sys.argv[1] in ("token", "--token", "--print-token"):
+            token = mint_installation_token()
+            sys.stdout.write(f"{token}\n")
+            return
+
+        sys.stderr.write("Usage: mint-github-token [setup|get|store|erase|token]\n")
+        sys.exit(1)
+
+
+    if __name__ == "__main__":
+        main()

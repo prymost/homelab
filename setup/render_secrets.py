@@ -91,6 +91,21 @@ def render_hermes(fields: Dict[str, str]) -> List[Dict[str, Any]]:
     if tavily_key:
         data["TAVILY_API_KEY"] = tavily_key
 
+    gh_fields = [k for k in ["HERMES_GITHUB_APP_ID", "HERMES_GITHUB_INSTALLATION_ID", "HERMES_GITHUB_APP_PRIVATE_KEY"] if fields.get(k)]
+    if gh_fields:
+        if len(gh_fields) < 3:
+            missing_gh = [k for k in ["HERMES_GITHUB_APP_ID", "HERMES_GITHUB_INSTALLATION_ID", "HERMES_GITHUB_APP_PRIVATE_KEY"] if not fields.get(k)]
+            sys.stderr.write(f"Error: Incomplete Hermes GitHub App configuration. Missing: {', '.join(missing_gh)}\n")
+            sys.exit(1)
+        data["GITHUB_APP_ID"] = str(fields["HERMES_GITHUB_APP_ID"]).strip()
+        data["GITHUB_INSTALLATION_ID"] = str(fields["HERMES_GITHUB_INSTALLATION_ID"]).strip()
+        raw_key = str(fields["HERMES_GITHUB_APP_PRIVATE_KEY"]).strip()
+        raw_key = raw_key.replace("\r\n", "\n").replace("\r", "\n").replace("\\n", "\n").strip()
+        data["GITHUB_APP_PRIVATE_KEY"] = raw_key + "\n"
+    else:
+        # Provide empty placeholder to prevent Kubelet volume mount failure when optional keys are not configured
+        data["GITHUB_APP_PRIVATE_KEY"] = ""
+
     return [build_secret("hermes-agent-secrets", "hermes-agent", data)]
 
 

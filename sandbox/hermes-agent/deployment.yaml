@@ -74,6 +74,13 @@ spec:
             - "gateway"
             - "run"
             - "--no-supervise"
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - "/bin/sh"
+                  - "-c"
+                  - "/usr/local/bin/mint-github-token setup 2>/dev/null || true"
           env:
             - name: PYTHONUNBUFFERED
               value: "1"
@@ -112,6 +119,18 @@ spec:
                   name: hermes-agent-secrets
                   key: TAVILY_API_KEY
                   optional: true
+            - name: GITHUB_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-agent-secrets
+                  key: GITHUB_APP_ID
+                  optional: true
+            - name: GITHUB_INSTALLATION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-agent-secrets
+                  key: GITHUB_INSTALLATION_ID
+                  optional: true
           resources:
             requests:
               cpu: "100m"
@@ -135,6 +154,12 @@ spec:
             - name: hermes-config
               mountPath: /opt/data/config.yaml
               subPath: config.yaml
+            - name: hermes-config
+              mountPath: /usr/local/bin/mint-github-token
+              subPath: mint-github-token
+            - name: hermes-secrets
+              mountPath: /etc/hermes-secrets
+              readOnly: true
             - name: tmp
               mountPath: /tmp
             - name: run
@@ -146,6 +171,15 @@ spec:
         - name: hermes-config
           configMap:
             name: hermes-agent-config
+            defaultMode: 0755
+        - name: hermes-secrets
+          secret:
+            secretName: hermes-agent-secrets
+            defaultMode: 0440
+            optional: true
+            items:
+              - key: GITHUB_APP_PRIVATE_KEY
+                path: github-app-private-key.pem
         - name: tmp
           emptyDir:
             medium: Memory

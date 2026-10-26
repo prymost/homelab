@@ -450,14 +450,18 @@ check_monitoring_robusta() {
 check_hermes_agent() {
   log_header "8. Hermes AI Agent Workload & Storage"
 
-  local hermes_ready hermes_replicas
+  local hermes_ready hermes_replicas hermes_updated
   hermes_ready="$(kubectl get deployment -n hermes-agent hermes-agent -o jsonpath='{.status.readyReplicas}' 2>/dev/null || echo "0")"
   hermes_replicas="$(kubectl get deployment -n hermes-agent hermes-agent -o jsonpath='{.status.replicas}' 2>/dev/null || echo "0")"
+  hermes_updated="$(kubectl get deployment -n hermes-agent hermes-agent -o jsonpath='{.status.updatedReplicas}' 2>/dev/null || echo "0")"
+  hermes_ready="${hermes_ready:-0}"
+  hermes_replicas="${hermes_replicas:-0}"
+  hermes_updated="${hermes_updated:-0}"
 
-  if [[ "$hermes_ready" -ge 1 && "$hermes_replicas" -ge 1 ]]; then
+  if [[ "$hermes_ready" -ge 1 && "$hermes_replicas" -ge 1 && "$hermes_updated" -ge 1 ]]; then
     log_pass "Hermes Agent deployment is 1/1 Running, Updated, and Ready"
   else
-    log_fail "Hermes Agent deployment anomaly (ready: ${hermes_ready}, total: ${hermes_replicas})"
+    log_fail "Hermes Agent deployment anomaly (ready: ${hermes_ready}, total: ${hermes_replicas}, updated: ${hermes_updated})"
   fi
 
   local hermes_pvc
