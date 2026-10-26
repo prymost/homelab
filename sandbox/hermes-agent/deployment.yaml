@@ -78,9 +78,8 @@ spec:
             postStart:
               exec:
                 command:
-                  - "/bin/sh"
-                  - "-c"
-                  - "/usr/local/bin/mint-github-token setup 2>/dev/null || true"
+                  - "/usr/local/bin/mint-github-token"
+                  - "setup"
           env:
             - name: PYTHONUNBUFFERED
               value: "1"

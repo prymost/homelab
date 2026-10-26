@@ -19,4 +19,7 @@ RUN curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 # Install Flux CLI
 RUN curl -s https://fluxcd.io/install.sh | bash
 
+# Switch to non-root developer user provided by the devcontainer base image
+USER vscode
+
 # COPY .bash_aliases /home/vscode/.bash_aliases

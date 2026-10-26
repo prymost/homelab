@@ -1,0 +1,23 @@
+# Targeted misconfiguration suppressions with path scoping and documented justifications.
+# https://aquasecurity.github.io/trivy/latest/docs/configuration/filtering/#trivyignoreyaml
+
+misconfigurations:
+  - id: AVD-KSV-0014
+    paths:
+      - "sandbox/home-assistant/deployment.yaml"
+    statement: "Home Assistant requires writable rootfs for dynamic Python wheel compilation and HACS apk installation"
+
+  - id: KSV-0014
+    paths:
+      - "sandbox/home-assistant/deployment.yaml"
+    statement: "Home Assistant requires writable rootfs for dynamic Python wheel compilation and HACS apk installation"
+
+  - id: AVD-KSV-0109
+    paths:
+      - "sandbox/hermes-agent/configmap.yaml"
+    statement: "Hermes Agent configmap contains Git credential helper script template, not hardcoded credentials"
+
+  - id: KSV-0109
+    paths:
+      - "sandbox/hermes-agent/configmap.yaml"
+    statement: "Hermes Agent configmap contains Git credential helper script template, not hardcoded credentials"
