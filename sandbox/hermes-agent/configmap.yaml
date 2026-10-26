@@ -18,6 +18,11 @@ data:
       default: "glm-5.3-flash"
       provider: "opencode-go"
       base_url: "https://opencode.ai/zen/go/v1"
+      aliases:
+        # Model IDs verified against https://opencode.ai/zen/go/v1/models (2026-10-25)
+        quick: "opencode-go/claude-haiku-5-5"
+        research: "opencode-go/glm-5.3"
+        deep: "opencode-go/deepseek-v4.1-flash"
 
     platform_toolsets:
       telegram:
