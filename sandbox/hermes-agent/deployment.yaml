@@ -78,9 +78,8 @@ spec:
             postStart:
               exec:
                 command:
-                  - "/bin/sh"
-                  - "-c"
-                  - "/usr/local/bin/mint-github-token setup 2>/dev/null || true"
+                  - "/usr/local/bin/mint-github-token"
+                  - "setup"
           env:
             - name: PYTHONUNBUFFERED
               value: "1"
@@ -156,7 +155,7 @@ spec:
               subPath: config.yaml
             - name: hermes-config
               mountPath: /usr/local/bin/mint-github-token
-              subPath: mint-github-auth
+              subPath: mint-github-token
             - name: hermes-secrets
               mountPath: /etc/hermes-secrets
               readOnly: true
