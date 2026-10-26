@@ -39,7 +39,7 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
-              chown -R 10000:10000 /opt/data && chmod 770 /opt/data
+              chown -R 10000:10000 /opt/data && chmod 770 /opt/data && ln -sfn /opt/data/cm/config.yaml /opt/data/config.yaml
           resources:
             requests:
               cpu: "50m"
@@ -151,8 +151,8 @@ spec:
             - name: hermes-data
               mountPath: /opt/data
             - name: hermes-config
-              mountPath: /opt/data/config.yaml
-              subPath: config.yaml
+              mountPath: /opt/data/cm
+              readOnly: true
             - name: hermes-config
               mountPath: /usr/local/bin/mint-github-token
               subPath: mint-github-token
