@@ -39,7 +39,7 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
-              chown -R 10000:10000 /opt/data && chmod 770 /opt/data && ln -sfn /opt/data/cm/config.yaml /opt/data/config.yaml
+              chown -R 10000:10000 /opt/data && chmod 770 /opt/data
           resources:
             requests:
               cpu: "50m"
@@ -87,6 +87,8 @@ spec:
               value: "1"
             - name: HERMES_HOME
               value: "/opt/data"
+            - name: HERMES_MANAGED_DIR
+              value: "/etc/hermes-config"
             - name: HERMES_ACCEPT_HOOKS
               value: "1"
             - name: HOME
@@ -150,10 +152,10 @@ spec:
           volumeMounts:
             - name: hermes-data
               mountPath: /opt/data
-            - name: hermes-config
-              mountPath: /opt/data/cm
+            - name: hermes-managed-config
+              mountPath: /etc/hermes-config
               readOnly: true
-            - name: hermes-config
+            - name: hermes-scripts
               mountPath: /usr/local/bin/mint-github-token
               subPath: mint-github-token
             - name: hermes-secrets
@@ -167,10 +169,20 @@ spec:
         - name: hermes-data
           persistentVolumeClaim:
             claimName: hermes-agent-data
-        - name: hermes-config
+        - name: hermes-managed-config
+          configMap:
+            name: hermes-agent-config
+            defaultMode: 0644
+            items:
+              - key: config.yaml
+                path: config.yaml
+        - name: hermes-scripts
           configMap:
             name: hermes-agent-config
             defaultMode: 0755
+            items:
+              - key: mint-github-token
+                path: mint-github-token
         - name: hermes-secrets
           secret:
             secretName: hermes-agent-secrets
