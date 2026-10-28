@@ -11,6 +11,8 @@ data:
   config.yaml: |
     _config_version: 51
 
+    timezone: "America/Los_Angeles"
+
     database:
       journal_mode: "delete"
 
