@@ -55,7 +55,7 @@ data:
     import subprocess
     import sys
     import time
-    from typing import Dict, Tuple
+    from typing import Any, Dict, Optional, Tuple
     import urllib.error
     import urllib.request
     import jwt
@@ -80,7 +80,7 @@ data:
         return app_id.strip(), installation_id.strip(), private_key
 
 
-    def mint_installation_token() -> str:
+    def mint_installation_token(repository: Optional[str] = None) -> str:
         app_id, installation_id, private_key = get_credentials()
 
         now = int(time.time())
@@ -95,14 +95,21 @@ data:
         if isinstance(encoded_jwt, bytes):
             encoded_jwt = encoded_jwt.decode("utf-8")
         url = f"https://api.github.com/app/installations/{installation_id}/access_tokens"
-        token_request_body = json.dumps({
-            "repositories": ["homelab"],
+        token_payload: Dict[str, Any] = {
             "permissions": {
                 "contents": "write",
                 "pull_requests": "write",
                 "metadata": "read",
             },
-        }).encode("utf-8")
+        }
+
+        # If a specific repository or GITHUB_REPOSITORIES env is set, scope the token;
+        # otherwise omit "repositories" to grant access to all repositories on the installation.
+        repo_scope = repository or os.environ.get("GITHUB_REPOSITORIES")
+        if repo_scope:
+            token_payload["repositories"] = [r.strip() for r in repo_scope.split(",") if r.strip()]
+
+        token_request_body = json.dumps(token_payload).encode("utf-8")
 
         req = urllib.request.Request(
             url,
@@ -186,11 +193,12 @@ data:
             return
 
         if len(sys.argv) > 1 and sys.argv[1] in ("token", "--token", "--print-token"):
-            token = mint_installation_token()
+            repo_arg = sys.argv[2] if len(sys.argv) > 2 else None
+            token = mint_installation_token(repo_arg)
             sys.stdout.write(f"{token}\n")
             return
 
-        sys.stderr.write("Usage: mint-github-token [setup|get|store|erase|token]\n")
+        sys.stderr.write("Usage: mint-github-token [setup|get|store|erase|token [repo]]\n")
         sys.exit(1)
 
 
