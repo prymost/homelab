@@ -89,3 +89,7 @@ To verify the end-to-end health of all cluster workloads, storage mounts, networ
 # Trigger Flux sync and wait for latest commit to reconcile before checking
 ./scripts/verify-cluster.sh --wait-sync
 ```
+
+---
+
+Sample PR line added by hermes-agent[bot] for pipeline verification. Safe to close/merge.
