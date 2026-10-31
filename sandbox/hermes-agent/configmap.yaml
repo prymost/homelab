@@ -107,7 +107,10 @@ data:
         # otherwise omit "repositories" to grant access to all repositories on the installation.
         repo_scope = repository or os.environ.get("GITHUB_REPOSITORIES")
         if repo_scope:
-            token_payload["repositories"] = [r.strip() for r in repo_scope.split(",") if r.strip()]
+            # Strip owner prefix if passed as owner/repo (GitHub expects repository names only)
+            token_payload["repositories"] = [
+                r.strip().split("/")[-1] for r in repo_scope.split(",") if r.strip()
+            ]
 
         token_request_body = json.dumps(token_payload).encode("utf-8")
 
@@ -198,7 +201,15 @@ data:
             sys.stdout.write(f"{token}\n")
             return
 
-        sys.stderr.write("Usage: mint-github-token [setup|get|store|erase|token [repo]]\n")
+        usage = (
+            "Usage: mint-github-token <command> [args]\n\n"
+            "Commands:\n"
+            "  setup         Configure git identity and credential helper\n"
+            "  get           Git credential helper protocol handler\n"
+            "  store|erase   Git credential helper protocol hooks (no-op)\n"
+            "  token [repo]  Mint installation token (all repos by default, or scoped to [repo])\n"
+        )
+        sys.stderr.write(usage)
         sys.exit(1)
 
 
