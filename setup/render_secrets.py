@@ -91,6 +91,15 @@ def render_hermes(fields: Dict[str, str]) -> List[Dict[str, Any]]:
     if tavily_key:
         data["TAVILY_API_KEY"] = tavily_key
 
+    linq_fields = [k for k in ["HERMES_LINQ_BUILDING_ID", "HERMES_LINQ_DISTRICT_ID"] if fields.get(k)]
+    if linq_fields:
+        if len(linq_fields) < 2:
+            missing_linq = [k for k in ["HERMES_LINQ_BUILDING_ID", "HERMES_LINQ_DISTRICT_ID"] if not fields.get(k)]
+            sys.stderr.write(f"Error: Incomplete Hermes LINQ configuration. Missing: {', '.join(missing_linq)}\n")
+            sys.exit(1)
+        data["LINQ_BUILDING_ID"] = str(fields["HERMES_LINQ_BUILDING_ID"]).strip()
+        data["LINQ_DISTRICT_ID"] = str(fields["HERMES_LINQ_DISTRICT_ID"]).strip()
+
     gh_fields = [k for k in ["HERMES_GITHUB_APP_ID", "HERMES_GITHUB_INSTALLATION_ID", "HERMES_GITHUB_APP_PRIVATE_KEY"] if fields.get(k)]
     if gh_fields:
         if len(gh_fields) < 3:

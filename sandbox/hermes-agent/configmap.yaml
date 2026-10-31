@@ -42,6 +42,11 @@ data:
     agent:
       max_turns: 50
 
+    terminal:
+      env_passthrough:
+        - LINQ_BUILDING_ID
+        - LINQ_DISTRICT_ID
+
   mint-github-token: |
     #!/opt/hermes/.venv/bin/python3
     """

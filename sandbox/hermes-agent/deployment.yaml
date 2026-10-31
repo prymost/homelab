@@ -134,6 +134,18 @@ spec:
                   name: hermes-agent-secrets
                   key: GITHUB_INSTALLATION_ID
                   optional: true
+            - name: LINQ_BUILDING_ID
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-agent-secrets
+                  key: LINQ_BUILDING_ID
+                  optional: true
+            - name: LINQ_DISTRICT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-agent-secrets
+                  key: LINQ_DISTRICT_ID
+                  optional: true
           resources:
             requests:
               cpu: "100m"

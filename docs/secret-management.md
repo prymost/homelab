@@ -71,3 +71,22 @@ env:
 ### 4. Apply & Commit
 1. Inject the secret: `./setup/inject_secrets_bw.sh`
 2. Commit the manifest and updated `setup/render_secrets.py` to Git (no secret values are in the commit).
+
+---
+
+## Secret Field Reference
+
+### Hermes Agent (`hermes-agent-secrets`)
+
+| Bitwarden Field Name | Kubernetes Secret Key | Required / Optional | Description |
+| :--- | :--- | :--- | :--- |
+| `HERMES_TELEGRAM_BOT_TOKEN` | `TELEGRAM_BOT_TOKEN` | Required | Bot authentication token from BotFather |
+| `HERMES_TELEGRAM_ALLOWED_USERS` | `TELEGRAM_ALLOWED_USERS` | Required | Authorized Telegram user ID(s) |
+| `HERMES_OPENAI_API_KEY` | `OPENAI_API_KEY` | Required | Primary inference provider API key |
+| `HERMES_OPENAI_BASE_URL` | `OPENAI_BASE_URL` | Optional | Custom inference base URL |
+| `HERMES_TAVILY_API_KEY` | `TAVILY_API_KEY` | Optional | Search tool API key |
+| `HERMES_GITHUB_APP_ID` | `GITHUB_APP_ID` | Optional | GitHub App ID for Git credential helper |
+| `HERMES_GITHUB_INSTALLATION_ID` | `GITHUB_INSTALLATION_ID` | Optional | GitHub App installation ID |
+| `HERMES_GITHUB_APP_PRIVATE_KEY` | `GITHUB_APP_PRIVATE_KEY` | Optional | GitHub App private key PEM |
+| `HERMES_LINQ_BUILDING_ID` | `LINQ_BUILDING_ID` | Optional (Atomic) | LINQ Connect Building GUID for school lunch automation |
+| `HERMES_LINQ_DISTRICT_ID` | `LINQ_DISTRICT_ID` | Optional (Atomic) | LINQ Connect District GUID for school lunch automation |
