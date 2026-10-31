@@ -85,7 +85,7 @@ An autonomous test suite is provided to verify that security changes do not caus
   - Never over-restrict network policies blindly. If uncertain whether a port or network path is required by an integration, pause and confirm with Boris before applying.
 - **GitOps First**: All cluster changes must be made through Git commits. Avoid `kubectl edit` on live resources.
 - **Separation of Concerns**: Keep base manifests/values in `sandbox/` and cluster-specific overlays in `clusters/`.
-- **Documentation**: Keep `CHANGELOG.md` updated and use `TODOs.md` for task tracking.
+- **Documentation**: Keep `CHANGELOG.md` updated. For any significant change, update `CHANGELOG.md` with a 1 to maximum 2-sentence explanation of changes under the current date.
 
 ---
 
