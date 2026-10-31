@@ -87,9 +87,6 @@ def render_robusta(fields: Dict[str, str]) -> List[Dict[str, Any]]:
     if not check_atomic_group(fields, "Robusta", required):
         return []
 
-    if fields["EMAIL_PASS"] == "your-email-password-or-app-key":
-        fail("EMAIL_PASS contains placeholder text. Please update your Bitwarden vault.")
-
     encoded_user = urllib.parse.quote(fields["SMTP_USER"], safe="")
     encoded_pass = urllib.parse.quote(fields["EMAIL_PASS"], safe="")
     query = urllib.parse.urlencode({
