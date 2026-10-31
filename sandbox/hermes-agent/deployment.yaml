@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       annotations:
-        redeploy-reason: "update mint-github-token script for multi-repo support"
+        redeploy-reason: "enable google calendar integration and token synchronization"
       labels:
         app: hermes-agent
         app.kubernetes.io/name: hermes-agent
@@ -41,7 +41,7 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
-              chown -R 10000:10000 /opt/data && chmod 770 /opt/data
+              chown -R -h 10000:10000 /opt/data && chmod 770 /opt/data
           resources:
             requests:
               cpu: "50m"
@@ -71,17 +71,11 @@ spec:
         - name: hermes-agent
           image: nousresearch/hermes-agent:stable@sha256:9c5561579f3ffdf333401797094ac3a743738d6c25d40f4331c7bf77b694238d
           command:
-            - "/opt/hermes/bin/hermes"
+            - "/bin/sh"
+            - "-c"
           args:
-            - "gateway"
-            - "run"
-            - "--no-supervise"
-          lifecycle:
-            postStart:
-              exec:
-                command:
-                  - "/usr/local/bin/mint-github-token"
-                  - "setup"
+            - |
+              /usr/local/bin/init-hermes-env && exec /opt/hermes/bin/hermes gateway run --no-supervise
           env:
             - name: PYTHONUNBUFFERED
               value: "1"
@@ -172,8 +166,14 @@ spec:
             - name: hermes-scripts
               mountPath: /usr/local/bin/mint-github-token
               subPath: mint-github-token
+            - name: hermes-scripts
+              mountPath: /usr/local/bin/init-hermes-env
+              subPath: init-hermes-env
             - name: hermes-secrets
               mountPath: /etc/hermes-secrets
+              readOnly: true
+            - name: hermes-gcal-secrets
+              mountPath: /etc/hermes-gcal-secrets
               readOnly: true
             - name: tmp
               mountPath: /tmp
@@ -197,6 +197,8 @@ spec:
             items:
               - key: mint-github-token
                 path: mint-github-token
+              - key: init-hermes-env
+                path: init-hermes-env
         - name: hermes-secrets
           secret:
             secretName: hermes-agent-secrets
@@ -205,6 +207,11 @@ spec:
             items:
               - key: GITHUB_APP_PRIVATE_KEY
                 path: github-app-private-key.pem
+        - name: hermes-gcal-secrets
+          secret:
+            secretName: hermes-agent-gcal-secrets
+            defaultMode: 0440
+            optional: true
         - name: tmp
           emptyDir:
             medium: Memory

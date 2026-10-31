@@ -8,11 +8,17 @@ multi-document Kubernetes manifests to stdout for direct piping to kubectl.
 import json
 import sys
 import urllib.parse
-from typing import Any, Dict, List
+from typing import Any, Dict, List, NoReturn
+
+
+def fail(message: str) -> NoReturn:
+    """Print an error message to stderr and terminate with non-zero exit code."""
+    sys.stderr.write(f"Error: {message}\n")
+    sys.exit(1)
 
 
 def build_secret(name: str, namespace: str, string_data: Dict[str, str]) -> Dict[str, Any]:
-    """Helper to construct an Opaque Kubernetes Secret resource."""
+    """Construct an Opaque Kubernetes Secret resource."""
     return {
         "apiVersion": "v1",
         "kind": "Secret",
@@ -25,21 +31,61 @@ def build_secret(name: str, namespace: str, string_data: Dict[str, str]) -> Dict
     }
 
 
+def check_atomic_group(fields: Dict[str, str], group_name: str, keys: List[str]) -> bool:
+    """Check if an atomic group of keys is fully present, fully absent, or invalid (partial)."""
+    present = [k for k in keys if fields.get(k)]
+    if not present:
+        return False
+    missing = [k for k in keys if not fields.get(k)]
+    if missing:
+        fail(f"Incomplete {group_name} configuration. Missing: {', '.join(missing)}")
+    return True
+
+
+def parse_json_object(field_name: str, raw: str) -> Dict[str, Any]:
+    """Parse string as a JSON dictionary or exit with a clear error."""
+    try:
+        data = json.loads(raw)
+        if isinstance(data, dict):
+            return data
+    except Exception:
+        pass
+    fail(f"Field {field_name} must be a valid JSON object")
+
+
+def validate_client_secret(raw: str) -> str:
+    """Ensure Google Client Secret contains a valid client_id."""
+    data = parse_json_object("HERMES_GOOGLE_CLIENT_SECRET", raw)
+    config = data.get("installed") or data.get("web") or data
+    if not isinstance(config, dict):
+        fail("Google Client Secret JSON configuration must be a dictionary")
+    client_id = config.get("client_id")
+    if not client_id or not isinstance(client_id, str) or not client_id.strip():
+        fail("Field 'client_id' in Google Client Secret JSON must be a non-empty string")
+    return str(raw).strip()
+
+
+def validate_google_token(raw: str) -> str:
+    """Ensure Google User Token contains a non-empty refresh_token."""
+    data = parse_json_object("HERMES_GOOGLE_TOKEN", raw)
+    ref_tok = data.get("refresh_token")
+    if not ref_tok or not isinstance(ref_tok, str) or not ref_tok.strip():
+        fail("Field 'refresh_token' in Google Token JSON must be a non-empty string")
+    return str(raw).strip()
+
+
+def normalize_pem_key(raw_key: str) -> str:
+    """Normalize multi-line RSA PEM key line endings."""
+    clean = str(raw_key).strip()
+    clean = clean.replace("\r\n", "\n").replace("\r", "\n").replace("\\n", "\n").strip()
+    return clean + "\n"
+
+
 def render_robusta(fields: Dict[str, str]) -> List[Dict[str, Any]]:
     """Generates robusta-secret-values if SMTP fields are present."""
     required = ["SMTP_USER", "EMAIL_PASS", "SMTP_SERVER", "EMAIL_FROM", "EMAIL_TO"]
-    present = [k for k in required if fields.get(k)]
-    if not present:
+    if not check_atomic_group(fields, "Robusta", required):
         return []
-
-    missing = [k for k in required if not fields.get(k)]
-    if missing:
-        sys.stderr.write(f"Error: Incomplete Robusta configuration. Missing: {', '.join(missing)}\n")
-        sys.exit(1)
-
-    if fields["EMAIL_PASS"] == "your-email-password-or-app-key":
-        sys.stderr.write("Error: EMAIL_PASS contains placeholder text. Please update your Bitwarden vault.\n")
-        sys.exit(1)
 
     encoded_user = urllib.parse.quote(fields["SMTP_USER"], safe="")
     encoded_pass = urllib.parse.quote(fields["EMAIL_PASS"], safe="")
@@ -61,56 +107,34 @@ def render_robusta(fields: Dict[str, str]) -> List[Dict[str, Any]]:
 
 def render_hermes(fields: Dict[str, str]) -> List[Dict[str, Any]]:
     """Generates hermes-agent-secrets if Hermes fields are present."""
-    tg_token = fields.get("HERMES_TELEGRAM_BOT_TOKEN")
-    # Only trigger Hermes secret generation if the primary Hermes token is present
-    if not tg_token:
+    core_keys = ["HERMES_TELEGRAM_BOT_TOKEN", "HERMES_TELEGRAM_ALLOWED_USERS", "HERMES_OPENAI_API_KEY"]
+    if not fields.get("HERMES_TELEGRAM_BOT_TOKEN"):
         return []
 
-    tg_users = fields.get("HERMES_TELEGRAM_ALLOWED_USERS")
-    openai_key = fields.get("HERMES_OPENAI_API_KEY")
-    tavily_key = fields.get("HERMES_TAVILY_API_KEY")
-    base_url = fields.get("HERMES_OPENAI_BASE_URL")
-
-    missing = []
-    if not tg_users:
-        missing.append("HERMES_TELEGRAM_ALLOWED_USERS")
-    if not openai_key:
-        missing.append("HERMES_OPENAI_API_KEY")
-
-    if missing:
-        sys.stderr.write(f"Error: Incomplete Hermes configuration. Missing: {', '.join(missing)}\n")
-        sys.exit(1)
+    check_atomic_group(fields, "Hermes core", core_keys)
 
     data: Dict[str, str] = {
-        "TELEGRAM_BOT_TOKEN": tg_token,
-        "TELEGRAM_ALLOWED_USERS": tg_users,
-        "OPENAI_API_KEY": openai_key,
+        "TELEGRAM_BOT_TOKEN": fields["HERMES_TELEGRAM_BOT_TOKEN"],
+        "TELEGRAM_ALLOWED_USERS": fields["HERMES_TELEGRAM_ALLOWED_USERS"],
+        "OPENAI_API_KEY": fields["HERMES_OPENAI_API_KEY"],
     }
-    if base_url:
-        data["OPENAI_BASE_URL"] = base_url
-    if tavily_key:
-        data["TAVILY_API_KEY"] = tavily_key
+    if fields.get("HERMES_OPENAI_BASE_URL"):
+        data["OPENAI_BASE_URL"] = fields["HERMES_OPENAI_BASE_URL"]
+    if fields.get("HERMES_TAVILY_API_KEY"):
+        data["TAVILY_API_KEY"] = fields["HERMES_TAVILY_API_KEY"]
 
-    linq_fields = [k for k in ["HERMES_LINQ_BUILDING_ID", "HERMES_LINQ_DISTRICT_ID"] if fields.get(k)]
-    if linq_fields:
-        if len(linq_fields) < 2:
-            missing_linq = [k for k in ["HERMES_LINQ_BUILDING_ID", "HERMES_LINQ_DISTRICT_ID"] if not fields.get(k)]
-            sys.stderr.write(f"Error: Incomplete Hermes LINQ configuration. Missing: {', '.join(missing_linq)}\n")
-            sys.exit(1)
+    # Optional atomic group: LINQ Connect school lunch parameters
+    linq_keys = ["HERMES_LINQ_BUILDING_ID", "HERMES_LINQ_DISTRICT_ID"]
+    if check_atomic_group(fields, "Hermes LINQ", linq_keys):
         data["LINQ_BUILDING_ID"] = str(fields["HERMES_LINQ_BUILDING_ID"]).strip()
         data["LINQ_DISTRICT_ID"] = str(fields["HERMES_LINQ_DISTRICT_ID"]).strip()
 
-    gh_fields = [k for k in ["HERMES_GITHUB_APP_ID", "HERMES_GITHUB_INSTALLATION_ID", "HERMES_GITHUB_APP_PRIVATE_KEY"] if fields.get(k)]
-    if gh_fields:
-        if len(gh_fields) < 3:
-            missing_gh = [k for k in ["HERMES_GITHUB_APP_ID", "HERMES_GITHUB_INSTALLATION_ID", "HERMES_GITHUB_APP_PRIVATE_KEY"] if not fields.get(k)]
-            sys.stderr.write(f"Error: Incomplete Hermes GitHub App configuration. Missing: {', '.join(missing_gh)}\n")
-            sys.exit(1)
+    # Optional atomic group: GitHub App authentication
+    gh_keys = ["HERMES_GITHUB_APP_ID", "HERMES_GITHUB_INSTALLATION_ID", "HERMES_GITHUB_APP_PRIVATE_KEY"]
+    if check_atomic_group(fields, "Hermes GitHub App", gh_keys):
         data["GITHUB_APP_ID"] = str(fields["HERMES_GITHUB_APP_ID"]).strip()
         data["GITHUB_INSTALLATION_ID"] = str(fields["HERMES_GITHUB_INSTALLATION_ID"]).strip()
-        raw_key = str(fields["HERMES_GITHUB_APP_PRIVATE_KEY"]).strip()
-        raw_key = raw_key.replace("\r\n", "\n").replace("\r", "\n").replace("\\n", "\n").strip()
-        data["GITHUB_APP_PRIVATE_KEY"] = raw_key + "\n"
+        data["GITHUB_APP_PRIVATE_KEY"] = normalize_pem_key(fields["HERMES_GITHUB_APP_PRIVATE_KEY"])
     else:
         # Provide empty placeholder to prevent Kubelet volume mount failure when optional keys are not configured
         data["GITHUB_APP_PRIVATE_KEY"] = ""
@@ -118,12 +142,23 @@ def render_hermes(fields: Dict[str, str]) -> List[Dict[str, Any]]:
     return [build_secret("hermes-agent-secrets", "hermes-agent", data)]
 
 
+def render_hermes_gcal(fields: Dict[str, str]) -> List[Dict[str, Any]]:
+    """Generates hermes-agent-gcal-secrets if Google Calendar fields are present."""
+    gcal_keys = ["HERMES_GOOGLE_CLIENT_SECRET", "HERMES_GOOGLE_TOKEN"]
+    if not check_atomic_group(fields, "Hermes Google Calendar", gcal_keys):
+        return []
+
+    return [build_secret("hermes-agent-gcal-secrets", "hermes-agent", {
+        "google-client-secret.json": validate_client_secret(fields["HERMES_GOOGLE_CLIENT_SECRET"]),
+        "google-token.json": validate_google_token(fields["HERMES_GOOGLE_TOKEN"]),
+    })]
+
+
 def main() -> None:
     try:
         raw_data = json.load(sys.stdin)
     except Exception as e:
-        sys.stderr.write(f"Error reading Bitwarden JSON from stdin: {e}\n")
-        sys.exit(1)
+        fail(f"reading Bitwarden JSON from stdin: {e}")
 
     fields = {
         str(f.get("name")): str(f.get("value"))
@@ -134,6 +169,7 @@ def main() -> None:
     manifests: List[Dict[str, Any]] = []
     manifests.extend(render_robusta(fields))
     manifests.extend(render_hermes(fields))
+    manifests.extend(render_hermes_gcal(fields))
 
     if not manifests:
         sys.stderr.write("Warning: No matching secrets generated from Bitwarden item fields.\n")

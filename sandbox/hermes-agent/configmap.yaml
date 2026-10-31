@@ -47,6 +47,73 @@ data:
         - LINQ_BUILDING_ID
         - LINQ_DISTRICT_ID
 
+  init-hermes-env: |
+    #!/opt/hermes/.venv/bin/python3
+    """
+    Hermes Agent Pre-Launch Initialization Hook.
+    Executes synchronously before 'hermes gateway run' to ensure Git configuration
+    and Google Calendar credentials are properly initialized without race conditions.
+    """
+    import os
+    import shutil
+    import subprocess
+    import sys
+    from pathlib import Path
+
+
+    def setup_git_config() -> None:
+        if os.path.exists("/usr/local/bin/mint-github-token"):
+            try:
+                subprocess.run(["/usr/local/bin/mint-github-token", "setup"], check=True)
+            except Exception as e:
+                sys.stderr.write(f"Warning: Git config setup failed: {e}\n")
+
+
+    def sync_google_credentials() -> None:
+        secret_dir = Path("/etc/hermes-gcal-secrets")
+        cred_dir = Path("/run/google-credentials")
+        data_dir = Path("/opt/data")
+
+        # Fast-exit if Google Calendar secret volume is not mounted (clean up stale dangling links if any)
+        if not (secret_dir / "google-token.json").is_file():
+            for filename in ("google_client_secret.json", "google_token.json"):
+                link = data_dir / filename
+                if link.is_symlink() and not link.exists():
+                    try:
+                        link.unlink()
+                    except OSError:
+                        pass
+            return
+
+        cred_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
+
+        # Copy credentials into writable in-memory tmpfs (/run) and link to /opt/data
+        for filename in ("google_client_secret.json", "google_token.json"):
+            src = secret_dir / filename.replace("_", "-")
+            mem = cred_dir / filename
+            link = data_dir / filename
+
+            if src.is_file():
+                shutil.copyfile(src, mem)
+                mem.chmod(0o600)
+                if link.is_symlink() or link.exists():
+                    link.unlink()
+                link.symlink_to(mem)
+
+        sys.stderr.write("Initialized Google Calendar credentials in memory-backed store.\n")
+
+
+    def main() -> None:
+        setup_git_config()
+        try:
+            sync_google_credentials()
+        except Exception as e:
+            sys.stderr.write(f"Warning: Failed to sync Google credentials: {e}\n")
+
+
+    if __name__ == "__main__":
+        main()
+
   mint-github-token: |
     #!/opt/hermes/.venv/bin/python3
     """

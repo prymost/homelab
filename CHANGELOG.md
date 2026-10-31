@@ -1,12 +1,11 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2026-10-31:
+- Integrated Google Calendar credentials into Hermes Agent secrets pipeline with memory-backed tmpfs storage.
+
 2026-10-30:
-- Integrated LINQ Connect school lunch parameters into Hermes Agent secrets pipeline:
-  - Extended `setup/render_secrets.py` with atomic completeness validation for `HERMES_LINQ_BUILDING_ID` and `HERMES_LINQ_DISTRICT_ID`.
-  - Injected `LINQ_BUILDING_ID` and `LINQ_DISTRICT_ID` into `sandbox/hermes-agent/deployment.yaml` with `optional: true` secretKeyRefs.
-  - Whitelisted variables under `terminal.env_passthrough` in `sandbox/hermes-agent/configmap.yaml` to ensure passthrough into sandboxed tool subprocesses.
-  - Documented Hermes Agent secret schema in `docs/secret-management.md`.
+- Integrated LINQ Connect school lunch parameters into Hermes Agent secrets pipeline.
 
 2026-10-25:
 - Hardened static analysis & resolved CI PR Trivy misconfiguration findings:
