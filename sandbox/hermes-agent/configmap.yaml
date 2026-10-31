@@ -74,8 +74,15 @@ data:
         cred_dir = Path("/run/google-credentials")
         data_dir = Path("/opt/data")
 
-        # Fast-exit if Google Calendar secret volume is not mounted
+        # Fast-exit if Google Calendar secret volume is not mounted (clean up stale dangling links if any)
         if not (secret_dir / "google-token.json").is_file():
+            for filename in ("google_client_secret.json", "google_token.json"):
+                link = data_dir / filename
+                if link.is_symlink() and not link.exists():
+                    try:
+                        link.unlink()
+                    except OSError:
+                        pass
             return
 
         cred_dir.mkdir(parents=True, exist_ok=True, mode=0o700)

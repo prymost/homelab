@@ -57,8 +57,11 @@ def validate_client_secret(raw: str) -> str:
     """Ensure Google Client Secret contains a valid client_id."""
     data = parse_json_object("HERMES_GOOGLE_CLIENT_SECRET", raw)
     config = data.get("installed") or data.get("web") or data
-    if not isinstance(config, dict) or "client_id" not in config:
-        fail("Missing 'client_id' in Google Client Secret JSON")
+    if not isinstance(config, dict):
+        fail("Google Client Secret JSON configuration must be a dictionary")
+    client_id = config.get("client_id")
+    if not client_id or not isinstance(client_id, str) or not client_id.strip():
+        fail("Field 'client_id' in Google Client Secret JSON must be a non-empty string")
     return str(raw).strip()
 
 

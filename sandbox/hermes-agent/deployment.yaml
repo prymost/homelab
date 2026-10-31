@@ -41,7 +41,7 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
-              find /opt/data -xtype l -delete && chown -R -h 10000:10000 /opt/data && chmod 770 /opt/data
+              chown -R -h 10000:10000 /opt/data && chmod 770 /opt/data
           resources:
             requests:
               cpu: "50m"
