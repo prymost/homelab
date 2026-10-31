@@ -17,6 +17,8 @@ spec:
       app.kubernetes.io/name: hermes-agent
   template:
     metadata:
+      annotations:
+        redeploy-reason: "update mint-github-token script for multi-repo support"
       labels:
         app: hermes-agent
         app.kubernetes.io/name: hermes-agent

@@ -55,7 +55,7 @@ data:
     import subprocess
     import sys
     import time
-    from typing import Dict, Tuple
+    from typing import Any, Dict, Optional, Tuple
     import urllib.error
     import urllib.request
     import jwt
@@ -80,7 +80,7 @@ data:
         return app_id.strip(), installation_id.strip(), private_key
 
 
-    def mint_installation_token() -> str:
+    def mint_installation_token(repository: Optional[str] = None) -> str:
         app_id, installation_id, private_key = get_credentials()
 
         now = int(time.time())
@@ -95,14 +95,24 @@ data:
         if isinstance(encoded_jwt, bytes):
             encoded_jwt = encoded_jwt.decode("utf-8")
         url = f"https://api.github.com/app/installations/{installation_id}/access_tokens"
-        token_request_body = json.dumps({
-            "repositories": ["homelab"],
+        token_payload: Dict[str, Any] = {
             "permissions": {
                 "contents": "write",
                 "pull_requests": "write",
                 "metadata": "read",
             },
-        }).encode("utf-8")
+        }
+
+        # If a specific repository or GITHUB_REPOSITORIES env is set, scope the token;
+        # otherwise omit "repositories" to grant access to all repositories on the installation.
+        repo_scope = repository or os.environ.get("GITHUB_REPOSITORIES")
+        if repo_scope:
+            # Strip owner prefix if passed as owner/repo (GitHub expects repository names only)
+            token_payload["repositories"] = [
+                r.strip().split("/")[-1] for r in repo_scope.split(",") if r.strip()
+            ]
+
+        token_request_body = json.dumps(token_payload).encode("utf-8")
 
         req = urllib.request.Request(
             url,
@@ -146,8 +156,14 @@ data:
         if host != "github.com" or protocol != "https":
             return
 
+        # Extract repository name from path if provided by git credential protocol (e.g. prymost/foo.git)
+        path = req.get("path", "").strip("/")
+        repo_name = None
+        if path:
+            repo_name = path.split("/")[-1].removesuffix(".git")
+
         try:
-            token = mint_installation_token()
+            token = mint_installation_token(repo_name)
         except (Exception, SystemExit):
             return
 
@@ -168,6 +184,7 @@ data:
         subprocess.run(["git", "config", "--global", "user.email", bot_email], check=True)
         # Clear existing helpers for github.com before registering to remain idempotent
         subprocess.run(["git", "config", "--global", "--unset-all", "credential.https://github.com.helper"], check=False)
+        subprocess.run(["git", "config", "--global", "credential.useHttpPath", "true"], check=True)
         subprocess.run(["git", "config", "--global", "--add", "credential.https://github.com.helper", "cache --timeout=3300"], check=True)
         subprocess.run(["git", "config", "--global", "--add", "credential.https://github.com.helper", "/usr/local/bin/mint-github-token"], check=True)
         sys.stderr.write(f"Configured git identity ({bot_name} <{bot_email}>) and scoped credential helper.\n")
@@ -186,11 +203,20 @@ data:
             return
 
         if len(sys.argv) > 1 and sys.argv[1] in ("token", "--token", "--print-token"):
-            token = mint_installation_token()
+            repo_arg = sys.argv[2] if len(sys.argv) > 2 else None
+            token = mint_installation_token(repo_arg)
             sys.stdout.write(f"{token}\n")
             return
 
-        sys.stderr.write("Usage: mint-github-token [setup|get|store|erase|token]\n")
+        usage = (
+            "Usage: mint-github-token <command> [args]\n\n"
+            "Commands:\n"
+            "  setup         Configure git identity and credential helper\n"
+            "  get           Git credential helper protocol handler\n"
+            "  store|erase   Git credential helper protocol hooks (no-op)\n"
+            "  token [repo]  Mint installation token (all repos by default, or scoped to [repo])\n"
+        )
+        sys.stderr.write(usage)
         sys.exit(1)
 
 
