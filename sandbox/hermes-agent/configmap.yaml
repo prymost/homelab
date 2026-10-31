@@ -156,8 +156,14 @@ data:
         if host != "github.com" or protocol != "https":
             return
 
+        # Extract repository name from path if provided by git credential protocol (e.g. prymost/foo.git)
+        path = req.get("path", "").strip("/")
+        repo_name = None
+        if path:
+            repo_name = path.split("/")[-1].removesuffix(".git")
+
         try:
-            token = mint_installation_token()
+            token = mint_installation_token(repo_name)
         except (Exception, SystemExit):
             return
 
@@ -178,6 +184,7 @@ data:
         subprocess.run(["git", "config", "--global", "user.email", bot_email], check=True)
         # Clear existing helpers for github.com before registering to remain idempotent
         subprocess.run(["git", "config", "--global", "--unset-all", "credential.https://github.com.helper"], check=False)
+        subprocess.run(["git", "config", "--global", "credential.useHttpPath", "true"], check=True)
         subprocess.run(["git", "config", "--global", "--add", "credential.https://github.com.helper", "cache --timeout=3300"], check=True)
         subprocess.run(["git", "config", "--global", "--add", "credential.https://github.com.helper", "/usr/local/bin/mint-github-token"], check=True)
         sys.stderr.write(f"Configured git identity ({bot_name} <{bot_email}>) and scoped credential helper.\n")
