@@ -34,7 +34,11 @@ bw status | jq -r .status
    ```bash
    ./setup/inject_secrets_bw.sh
    ```
-3. Verify cluster health: `./scripts/verify-cluster.sh`.
+3. Restart affected workloads to load rotated secrets:
+   ```bash
+   kubectl rollout restart deployment/hermes-agent -n hermes-agent
+   ```
+4. Verify cluster health: `./scripts/verify-cluster.sh`.
 
 ---
 
@@ -90,3 +94,10 @@ env:
 | `HERMES_GITHUB_APP_PRIVATE_KEY` | `GITHUB_APP_PRIVATE_KEY` | Optional | GitHub App private key PEM |
 | `HERMES_LINQ_BUILDING_ID` | `LINQ_BUILDING_ID` | Optional (Atomic) | LINQ Connect Building GUID for school lunch automation |
 | `HERMES_LINQ_DISTRICT_ID` | `LINQ_DISTRICT_ID` | Optional (Atomic) | LINQ Connect District GUID for school lunch automation |
+
+### Hermes Google Calendar (`hermes-agent-gcal-secrets`)
+
+| Bitwarden Field Name | Kubernetes Secret Key | Required / Optional | Description |
+| :--- | :--- | :--- | :--- |
+| `HERMES_GOOGLE_CLIENT_SECRET` | `google-client-secret.json` | Optional (Atomic) | Google OAuth 2.0 Desktop client secret JSON |
+| `HERMES_GOOGLE_TOKEN` | `google-token.json` | Optional (Atomic) | Google OAuth 2.0 authorized user refresh token JSON (scoped to `calendar.events`) |
