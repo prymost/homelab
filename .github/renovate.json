@@ -9,6 +9,9 @@
   "dependencyDashboardTitle": "Homelab Dependency Dashboard",
   "labels": ["dependencies", "homelab"],
   "commitMessagePrefix": "chore(deps):",
+  "automerge": true,
+  "automergeType": "pr",
+  "platformAutomerge": true,
   "prConcurrentLimit": 5,
   "prHourlyLimit": 2,
   "ignorePaths": [

@@ -2,7 +2,7 @@ I will record changes to this file just so i don't need to look at commit histor
 
 # Changelog
 2026-11-01:
-- Configured Renovate Bot to track updates for Flux Helm releases, container images, and K3s engine versions via PRs.
+- Configured Renovate Bot to track updates for Flux Helm releases, container images, and K3s engine versions via PRs with GitHub native auto-merge upon approval.
 
 2026-10-31:
 - Integrated Google Calendar credentials into Hermes Agent secrets pipeline with memory-backed tmpfs storage.
