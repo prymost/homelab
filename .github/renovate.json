@@ -5,6 +5,7 @@
     "docker:pinDigests"
   ],
   "timezone": "America/Los_Angeles",
+  "schedule": ["before 6am on monday"],
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Homelab Dependency Dashboard",
   "labels": ["dependencies", "homelab"],
