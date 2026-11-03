@@ -5,3 +5,4 @@ resources:
   - allow-dns.yaml
   - allow-k8s-api.yaml
   - allow-external-egress.yaml
+  - allow-home-assistant-egress.yaml

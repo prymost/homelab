@@ -1,6 +1,9 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2026-11-03:
+- Added bi-directional least-privilege NetworkPolicies enabling secure inter-service communication between Hermes Agent and Home Assistant on TCP port 8123.
+
 2026-11-02:
 - Added Home Assistant token (`HERMES_HASS_TOKEN`) extraction to Hermes Agent secret pipeline in `setup/render_secrets.py`.
 

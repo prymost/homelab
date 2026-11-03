@@ -5,3 +5,4 @@ resources:
   - allow-ingress.yaml
   - allow-monitoring.yaml
   - allow-egress.yaml
+  - allow-ingress-from-hermes.yaml
