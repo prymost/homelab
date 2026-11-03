@@ -1,6 +1,9 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2026-11-02:
+- Added Home Assistant token (`HERMES_HASS_TOKEN`) extraction to Hermes Agent secret pipeline in `setup/render_secrets.py`.
+
 2026-11-01:
 - Configured Renovate Bot to track updates for Flux Helm releases, container images, and K3s engine versions via PRs with GitHub native auto-merge upon approval.
 

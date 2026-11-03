@@ -122,6 +122,8 @@ def render_hermes(fields: Dict[str, str]) -> List[Dict[str, Any]]:
         data["OPENAI_BASE_URL"] = fields["HERMES_OPENAI_BASE_URL"]
     if fields.get("HERMES_TAVILY_API_KEY"):
         data["TAVILY_API_KEY"] = fields["HERMES_TAVILY_API_KEY"]
+    if fields.get("HERMES_HASS_TOKEN"):
+        data["HASS_TOKEN"] = str(fields["HERMES_HASS_TOKEN"]).strip()
 
     # Optional atomic group: LINQ Connect school lunch parameters
     linq_keys = ["HERMES_LINQ_BUILDING_ID", "HERMES_LINQ_DISTRICT_ID"]
