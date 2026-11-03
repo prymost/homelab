@@ -2,6 +2,7 @@ I will record changes to this file just so i don't need to look at commit histor
 
 # Changelog
 2026-11-03:
+- Configured Hermes Agent with Home Assistant endpoint, token mapping, automated plugin initialization, and enabled the `homeassistant` toolset for Telegram.
 - Added bi-directional least-privilege NetworkPolicies enabling secure inter-service communication between Hermes Agent and Home Assistant on TCP port 8123.
 
 2026-11-02:

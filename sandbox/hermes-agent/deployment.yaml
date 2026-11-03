@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       annotations:
-        redeploy-reason: "enable google calendar integration and token synchronization"
+        redeploy-reason: "enable home assistant integration, token mapping, and network policies"
       labels:
         app: hermes-agent
         app.kubernetes.io/name: hermes-agent
@@ -139,6 +139,14 @@ spec:
                 secretKeyRef:
                   name: hermes-agent-secrets
                   key: LINQ_DISTRICT_ID
+                  optional: true
+            - name: HASS_URL
+              value: "http://home-assistant.home-assistant.svc.cluster.local:8123"
+            - name: HASS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-agent-secrets
+                  key: HASS_TOKEN
                   optional: true
           resources:
             requests:

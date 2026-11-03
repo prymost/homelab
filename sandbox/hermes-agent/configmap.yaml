@@ -33,6 +33,11 @@ data:
         - skills
         - todo
         - terminal
+        - homeassistant
+
+    plugins:
+      enabled:
+        - homeassistant
 
     gateway:
       platforms:
@@ -103,12 +108,30 @@ data:
         sys.stderr.write("Initialized Google Calendar credentials in memory-backed store.\n")
 
 
+    def ensure_homeassistant_plugin() -> None:
+        plugin_dir = Path("/opt/data/plugins/homeassistant")
+        manifest = plugin_dir / "plugin.yaml"
+        if not manifest.is_file():
+            if plugin_dir.exists():
+                shutil.rmtree(plugin_dir, ignore_errors=True)
+            try:
+                cmd = ["/opt/hermes/bin/hermes", "plugins", "install", "--yes-deps", "homeassistant"]
+                subprocess.run(cmd, check=True, timeout=120)
+                sys.stderr.write("Successfully installed homeassistant plugin.\n")
+            except Exception as e:
+                sys.stderr.write(f"Error: Failed to install homeassistant plugin: {e}\n")
+                if plugin_dir.exists():
+                    shutil.rmtree(plugin_dir, ignore_errors=True)
+                raise
+
+
     def main() -> None:
         setup_git_config()
         try:
             sync_google_credentials()
         except Exception as e:
             sys.stderr.write(f"Warning: Failed to sync Google credentials: {e}\n")
+        ensure_homeassistant_plugin()
 
 
     if __name__ == "__main__":
