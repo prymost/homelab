@@ -246,7 +246,7 @@ views:
             color_icon: true
           battery:
             entity: sensor.total_battery_power
-            state_of_charge: sensor.encharge_492352002981_battery
+            state_of_charge: sensor.envoy_202403004899_battery
             color_circle: true
           grid:
             entity: sensor.grid_net_power
