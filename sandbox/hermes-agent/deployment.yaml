@@ -148,6 +148,12 @@ spec:
                   name: hermes-agent-secrets
                   key: HASS_TOKEN
                   optional: true
+            - name: GROQ_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: hermes-agent-secrets
+                  key: GROQ_API_KEY
+                  optional: true
           resources:
             requests:
               cpu: "100m"

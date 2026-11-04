@@ -16,6 +16,27 @@ data:
     database:
       journal_mode: "delete"
 
+    # Voice: STT/TTS are TOP-LEVEL sections (not nested under voice:).
+    # provider: groq -> whisper-large-v3-turbo via free-tier Groq API. Cluster cannot
+    # host quality ASR (single active 4-core node, Boris finds small whisper models
+    # unusable - quality dictates large-v3 family). Without GROQ_API_KEY in env the
+    # resolver degrades to "none" (same as today: voice notes stay untranscribed
+    # .ogg files) - so this config is SAFE to merge before the secret exists.
+    stt:
+      enabled: true
+      provider: groq
+      groq:
+        model: whisper-large-v3-turbo   # default anyway; explicit for future Groq changes
+
+    tts:
+      provider: edge                     # free Edge TTS; Telegram replies as voice bubbles
+
+    auxiliary:
+      voice_chat:
+        # voice notes/turns run on the fast auxiliary model, sparing glm-5.3 quota
+        provider: opencode-go
+        model: claude-haiku-5-5
+
     model:
       default: "glm-5.3-flash"
       provider: "opencode-go"
