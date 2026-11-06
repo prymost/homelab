@@ -37,7 +37,7 @@ spec:
           type: RuntimeDefault
       initContainers:
         - name: init-volume-permissions
-          image: alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a
+          image: alpine:3.24.4@sha256:93b41ef40b1677fce8fcc64ff4af09daddfacf5040afde618bc46c1e2d1cc7d4
           command: ["/bin/sh", "-c"]
           args:
             - |
@@ -69,7 +69,7 @@ spec:
               mountPath: /opt/data
       containers:
         - name: hermes-agent
-          image: nousresearch/hermes-agent:stable@sha256:9c5561579f3ffdf333401797094ac3a743738d6c25d40f4331c7bf77b694238d
+          image: nousresearch/hermes-agent:stable@sha256:adb7890916de63245523492be8f68f9d2095fecbec4e2a6dab7960381f0fc002
           command:
             - "/bin/sh"
             - "-c"
