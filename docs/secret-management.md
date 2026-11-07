@@ -89,6 +89,8 @@ env:
 | `HERMES_OPENAI_API_KEY` | `OPENAI_API_KEY` | Required | Primary inference provider API key |
 | `HERMES_OPENAI_BASE_URL` | `OPENAI_BASE_URL` | Optional | Custom inference base URL |
 | `HERMES_TAVILY_API_KEY` | `TAVILY_API_KEY` | Optional | Search tool API key |
+| `HERMES_HASS_TOKEN` | `HASS_TOKEN` | Optional | Home Assistant long-lived access token |
+| `HERMES_GROQ_API_KEY` | `GROQ_API_KEY` | Optional | Groq API key for Whisper STT (voice-to-text) |
 | `HERMES_GITHUB_APP_ID` | `GITHUB_APP_ID` | Optional | GitHub App ID for Git credential helper |
 | `HERMES_GITHUB_INSTALLATION_ID` | `GITHUB_INSTALLATION_ID` | Optional | GitHub App installation ID |
 | `HERMES_GITHUB_APP_PRIVATE_KEY` | `GITHUB_APP_PRIVATE_KEY` | Optional | GitHub App private key PEM |

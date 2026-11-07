@@ -1,6 +1,10 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2026-11-06:
+- Configured Hermes Agent with Groq Whisper STT, Edge TTS, and Claude Haiku voice turn routing.
+- Added Groq API key (`HERMES_GROQ_API_KEY`) extraction to the secret injection pipeline in `setup/render_secrets.py`.
+
 2026-11-03:
 - Configured Hermes Agent with Home Assistant endpoint, token mapping, automated plugin initialization, and enabled the `homeassistant` toolset for Telegram.
 - Added bi-directional least-privilege NetworkPolicies enabling secure inter-service communication between Hermes Agent and Home Assistant on TCP port 8123.

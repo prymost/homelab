@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       annotations:
-        redeploy-reason: "enable home assistant integration, token mapping, and network policies"
+        redeploy-reason: "enable voice STT/TTS and groq secret mapping"
       labels:
         app: hermes-agent
         app.kubernetes.io/name: hermes-agent
@@ -229,7 +229,7 @@ spec:
         - name: tmp
           emptyDir:
             medium: Memory
-            sizeLimit: 64Mi
+            sizeLimit: 256Mi
         - name: run
           emptyDir:
             medium: Memory
