@@ -207,6 +207,44 @@ views:
         view_layout:
           grid-area: footer
         cards:
+          - type: gauge
+            entity: sensor.litter_robot_4_litter_level
+            name: Litter
+            min_value: 0
+            max_value: 100
+            needle: false
+            severity:
+              green: [60, 100]
+              yellow: [25, 60]
+              red: [0, 25]
+            card_mod:
+              style: |
+                :host {
+                  flex: 0 0 150px !important;
+                }
+          - type: gauge
+            entity: sensor.litter_robot_4_waste_drawer
+            name: Waste
+            min_value: 0
+            max_value: 100
+            needle: false
+            severity:
+              green: [0, 50]
+              yellow: [50, 75]
+              red: [75, 100]
+            card_mod:
+              style: |
+                :host {
+                  flex: 0 0 150px !important;
+                }
+          - type: tile
+            entity: sensor.benny_weight
+            icon: mdi:cat
+            name: Benny
+          - type: tile
+            entity: sensor.rowland_weight
+            icon: mdi:cat
+            name: Rowland
           - type: tile
             entity: switch.rt_ax88u_openvpn_client_1
             name: "🇮🇹 Italy"
