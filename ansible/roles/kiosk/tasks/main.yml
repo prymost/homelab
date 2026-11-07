@@ -10,6 +10,17 @@
     - { option: 'AutomaticLoginEnable', value: 'true' }
     - { option: 'AutomaticLogin', value: "{{ kiosk_user }}" }
 
+- name: Disable Wi-Fi power saving in NetworkManager
+  copy:
+    dest: /etc/NetworkManager/conf.d/99-disable-wifi-powersave.conf
+    content: |
+      [connection]
+      wifi.powersave = 2
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Reload NetworkManager
+
 - name: Ensure Firefox policy directory exists
   file:
     path: /etc/firefox/policies

@@ -1,6 +1,9 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2026-11-07:
+- Disabled Wi-Fi power saving in NetworkManager for the Kiosk PC role to prevent ARP resolution timeouts and connection drops.
+
 2026-11-06:
 - Configured Hermes Agent with Groq Whisper STT, Edge TTS, and Claude Haiku voice turn routing.
 - Added Groq API key (`HERMES_GROQ_API_KEY`) extraction to the secret injection pipeline in `setup/render_secrets.py`.
