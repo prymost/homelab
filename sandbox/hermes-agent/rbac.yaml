@@ -30,6 +30,14 @@ rules:
     resources: ["events"]
     verbs: ["get", "list", "watch"]
   # Workload replica status and rollout tracking
+  # Container logs for crash diagnosis (single-fetch get with tailLines; no follow, no exec)
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+  # Storage diagnosis: PVC binding state and PV backing metadata (read-only)
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims", "persistentvolumes"]
+    verbs: ["get", "list"]
   - apiGroups: ["apps"]
     resources: ["deployments", "daemonsets", "statefulsets", "replicasets"]
     verbs: ["get", "list", "watch"]
