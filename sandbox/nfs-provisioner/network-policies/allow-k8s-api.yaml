@@ -10,9 +10,22 @@ spec:
   policyTypes:
     - Egress
   egress:
+    # In-cluster API Service ClusterIP
     - to:
         - ipBlock:
             cidr: 10.43.0.1/32
       ports:
         - protocol: TCP
           port: 443
+    # Control plane master node direct endpoints (post-DNAT fallback):
+    # k3s networkpolicy enforcement can evaluate egress against the DNATed
+    # destination, so the serviced ClusterIP allow alone rejects when rule
+    # chains are rebuilt (node restart). Mirror hermes-agent and monitoring.
+    - to:
+        - ipBlock:
+            cidr: 192.168.50.119/32
+        - ipBlock:
+            cidr: 192.168.50.120/32
+      ports:
+        - protocol: TCP
+          port: 6443
