@@ -25,21 +25,56 @@ rules:
   - apiGroups: [""]
     resources: ["namespaces", "pods", "pods/status"]
     verbs: ["get", "list", "watch"]
+  # Container logs for crash diagnosis (client must enforce tailLines/no-follow)
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
   # Warning and diagnostic events for pod/node failure analysis
   - apiGroups: ["", "events.k8s.io"]
     resources: ["events"]
     verbs: ["get", "list", "watch"]
-  # Workload replica status and rollout tracking
-  # Container logs for crash diagnosis (single-fetch get with tailLines; no follow, no exec)
+  # Service discovery, endpoints, and ingress routing
   - apiGroups: [""]
-    resources: ["pods/log"]
-    verbs: ["get"]
-  # Storage diagnosis: PVC binding state and PV backing metadata (read-only)
+    resources: ["services", "endpoints"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["discovery.k8s.io"]
+    resources: ["endpointslices"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses", "networkpolicies"]
+    verbs: ["get", "list", "watch"]
+  # Storage diagnosis: PVC binding state, PV backing metadata, and StorageClasses
   - apiGroups: [""]
     resources: ["persistentvolumeclaims", "persistentvolumes"]
-    verbs: ["get", "list"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses"]
+    verbs: ["get", "list", "watch"]
+  # Workload replica status and rollout tracking
   - apiGroups: ["apps"]
     resources: ["deployments", "daemonsets", "statefulsets", "replicasets"]
+    verbs: ["get", "list", "watch"]
+  # Batch workloads (cronjobs and migration/install jobs)
+  - apiGroups: ["batch"]
+    resources: ["jobs", "cronjobs"]
+    verbs: ["get", "list", "watch"]
+  # Live resource utilization (metrics-server)
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["nodes", "pods"]
+    verbs: ["get", "list"]
+  # GitOps health and reconciliation status (FluxCD)
+  - apiGroups: ["source.toolkit.fluxcd.io"]
+    resources: ["gitrepositories", "helmrepositories", "helmcharts"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["kustomize.toolkit.fluxcd.io"]
+    resources: ["kustomizations"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["helm.toolkit.fluxcd.io"]
+    resources: ["helmreleases"]
+    verbs: ["get", "list", "watch"]
+  # Vulnerability and compliance reports (Trivy)
+  - apiGroups: ["aquasecurity.github.io"]
+    resources: ["vulnerabilityreports"]
     verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
