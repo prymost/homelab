@@ -1,6 +1,9 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2026-11-08:
+- Expanded Hermes Agent ClusterRole with read-only diagnostics for container logs, storage classes, networking, batch jobs, metrics, and FluxCD status.
+
 2026-11-07:
 - Disabled Wi-Fi power saving in NetworkManager for the Kiosk PC role to prevent ARP resolution timeouts and connection drops.
 
