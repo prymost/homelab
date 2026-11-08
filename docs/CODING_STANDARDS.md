@@ -40,6 +40,8 @@ This is a **living document**. Every rule below is short, specific, and exists t
   - *Why*: Guarantees deterministic, reproducible deployments and protects against upstream supply-chain tampering.
 - **Network Isolation**: Every application must include `network-policies/` with `default-deny.yaml` and explicit, least-privilege allow rules. Do not allow egress to the Kubernetes API (`10.43.0.1:443`) unless the workload is an authorized cluster observer.
   - *Why*: Blocks lateral movement across namespaces and prevents unauthorized external data exfiltration.
+- **K3s Kubernetes API Egress**: NetworkPolicies granting egress to the Kubernetes API must allow both the Service ClusterIP (`10.43.0.1/32:443`) and the control plane master node post-DNAT endpoint (`192.168.50.119/32:6443`). Do not include worker nodes.
+  - *Why*: K3s uses kube-router which evaluates NetworkPolicy egress filtering in iptables post-DNAT. Traffic targeting `10.43.0.1:443` is rewritten to the master node host endpoint before egress policy inspection; omitting the master endpoint results in connection drops and pod crashloops.
 - **Secret Hygiene**: Never commit secrets or `.env` files to Git; avoid passing sensitive values as CLI arguments (visible in `ps aux`). Use Bitwarden CLI (`bw`) in-memory injection.
   - *Why*: Prevents credential leaks in git history, shell logs, and process tables.
 

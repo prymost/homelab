@@ -10,9 +10,20 @@ spec:
   policyTypes:
     - Egress
   egress:
+    # In-cluster API Service ClusterIP
     - to:
         - ipBlock:
             cidr: 10.43.0.1/32
       ports:
         - protocol: TCP
           port: 443
+    # Control plane master node direct endpoint (post-DNAT fallback):
+    # k3s kube-router evaluates NetworkPolicy egress against the DNATed
+    # destination, so the ClusterIP allow alone is rejected once rewritten
+    # to the master node host endpoint (homelab1).
+    - to:
+        - ipBlock:
+            cidr: 192.168.50.119/32
+      ports:
+        - protocol: TCP
+          port: 6443
