@@ -2,6 +2,7 @@ I will record changes to this file just so i don't need to look at commit histor
 
 # Changelog
 2026-11-08:
+- Fixed nfs-provisioner CrashLoopBackOff by adding post-DNAT control-plane master endpoint egress (192.168.50.119:6443) to allow-k8s-api NetworkPolicy.
 - Expanded Hermes Agent ClusterRole with read-only diagnostics for container logs, storage classes, networking, batch jobs, metrics, and FluxCD status.
 
 2026-11-07:
