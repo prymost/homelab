@@ -68,6 +68,17 @@ data:
     agent:
       max_turns: 50
 
+    # Approval allowlist: dangerous-pattern rule keys (the exact labels shown in
+    # approval prompts) pre-approved on every surface, including unattended cron
+    # and chat -q runs. Mined from approval history (hermes approvals suggest).
+    # Tirith content-security findings still block independently of this list.
+    command_allowlist:
+      - script execution via -e/-c flag
+      - shell command via -c/-lc flag
+      - command parser limit or malformed executable payload
+      - git force push (rewrites remote history)
+      - script execution via heredoc
+
     terminal:
       env_passthrough:
         - LINQ_BUILDING_ID
