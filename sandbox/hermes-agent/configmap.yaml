@@ -68,6 +68,15 @@ data:
     agent:
       max_turns: 50
 
+    # Approval allowlist: safe scripting pattern rule keys pre-approved across
+    # surfaces to prevent approval prompt fatigue on inline scripting and file writes.
+    # Destructive operations (e.g. git force push) and parser limits are intentionally
+    # excluded to preserve security guardrails.
+    command_allowlist:
+      - script execution via -e/-c flag
+      - shell command via -c/-lc flag
+      - script execution via heredoc
+
     terminal:
       env_passthrough:
         - LINQ_BUILDING_ID
