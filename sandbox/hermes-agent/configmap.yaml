@@ -59,6 +59,19 @@ data:
     plugins:
       enabled:
         - homeassistant
+        # Bundled hygiene + guardrail plugins (opt-in by default, safe defaults):
+        # disk-cleanup — hooks track ephemeral files (test_*, tmp_*, *.test.*)
+        #   created under $HERMES_HOME or /tmp/hermes-* and sweeps them at session
+        #   end (test files always, temp >7d, cron logs >14d); append-only audit
+        #   log; project trees, logs/, sessions/, skills/ are never touched.
+        #   Manual control: /disk-cleanup status | dry-run | quick.
+        # security-guidance — pattern-matches 25 dangerous-code rules on every
+        #   file write (pickle.load, yaml.load without SafeLoader, eval(),
+        #   shell=True, raw innerHTML, Actions ${{ }} injection, ...); warn-mode
+        #   only (set SECURITY_GUIDANCE_BLOCK=1 to hard-block). Non-blocking:
+        #   file is written, warning reaches the model next turn.
+        - disk-cleanup
+        - security-guidance
 
     gateway:
       platforms:
