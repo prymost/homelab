@@ -59,6 +59,10 @@ data:
     plugins:
       enabled:
         - homeassistant
+        # Bundled plugins are opt-in; behavior and knobs:
+        # https://hermes-agent.nousresearch.com/docs/user-guide/features/built-in-plugins
+        - disk-cleanup
+        - security-guidance
 
     gateway:
       platforms:
