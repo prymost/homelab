@@ -16,6 +16,7 @@ views:
       grid-gap: 0
       margin: 0
       padding: 5px
+      height: 100%
       grid-template-areas: |
         "header sidebar"
         "cal sidebar"
@@ -77,6 +78,19 @@ views:
       - type: vertical-stack
         view_layout:
           grid-area: cal
+        card_mod:
+          style: |-
+            :host {
+              min-height: 0;
+              overflow-y: auto;
+              -webkit-overflow-scrolling: touch;
+              overscroll-behavior: contain;
+              touch-action: pan-y;
+              scrollbar-width: none;
+            }
+            :host::-webkit-scrollbar {
+              display: none;
+            }
         cards:
           - type: conditional
             conditions:
