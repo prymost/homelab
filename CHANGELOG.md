@@ -1,6 +1,9 @@
 I will record changes to this file just so i don't need to look at commit history every time
 
 # Changelog
+2026-11-28:
+- Replaced the kiosk autostart launcher loop with a `kiosk-firefox` `systemd --user` service bound to `graphical-session.target`, enabled `MOZ_USE_XINPUT2=1` for X11 touchscreen scrolling, and removed the unused `kiosk-idle-monitor` script.
+
 2026-11-14:
 - Pre-approved safe scripting command patterns in Hermes Agent config to reduce approval prompts while excluding destructive git and parser bypass rules.
 

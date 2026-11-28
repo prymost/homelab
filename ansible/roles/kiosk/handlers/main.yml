@@ -3,3 +3,22 @@
   systemd:
     name: NetworkManager
     state: reloaded
+
+- name: Restart kiosk-firefox
+  become: true
+  become_user: "{{ kiosk_user }}"
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ kiosk_uid.stdout }}"
+    DBUS_SESSION_BUS_ADDRESS: "unix:path=/run/user/{{ kiosk_uid.stdout }}/bus"
+  systemd:
+    name: kiosk-firefox
+    scope: user
+    daemon_reload: true
+    state: restarted
+  register: kiosk_restart_result
+  when: graphical_session_active.rc == 0
+  failed_when: >-
+    kiosk_restart_result is failed and not (
+      ansible_check_mode and
+      'Could not find the requested service' in (kiosk_restart_result.msg | default(''))
+    )
